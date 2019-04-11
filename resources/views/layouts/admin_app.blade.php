@@ -10,8 +10,6 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
-    <script src="{{ asset('js/chart-js-config.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -21,6 +19,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/spur.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom_admin.css') }}" rel="stylesheet">
+    @yield('chartsjs')
     <title>Admin Vo Huy</title>
 </head>
 <body>
@@ -30,34 +29,35 @@
             <a href="#!" class="menu-toggle">
                 <i class="fas fa-bars"></i>
             </a>
-            <a href="index.html" class="spur-logo"><i class="fas fa-bolt"></i> <span>Spur</span></a>
+            <a href="/Admin" class="spur-logo"><i class="fas fa-bolt"></i> <span>Vo Huy</span></a>
         </header>
         <nav class="dash-nav-list">
             <a href="index.html" class="dash-nav-item">
                 <i class="fas fa-home"></i> Dashboard </a>
-            <div class="dash-nav-dropdown">
-                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                    <i class="fas fa-chart-bar"></i> Charts </a>
-                <div class="dash-nav-dropdown-menu">
-                    <a href="chartjs.html" class="dash-nav-dropdown-item">Chart.js</a>
-                </div>
-            </div>
             <div class="dash-nav-dropdown ">
                 <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
                     <i class="fas fa-cube"></i> Thành viên </a>
                 <div class="dash-nav-dropdown-menu">
-                    <a href="list.html" class="dash-nav-dropdown-item">Danh sách</a>
-                    <a href="add_new.html" class="dash-nav-dropdown-item">Thêm mới</a>
+                    <a href="{{url('/Admin/list-members')}}" class="dash-nav-dropdown-item">Danh sách</a>
+                    <a href="{{url('/Admin/add-new-member')}}" class="dash-nav-dropdown-item">Thêm mới</a>
                 </div>
             </div>
             <div class="dash-nav-dropdown">
                 <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                    <i class="fas fa-file"></i> Layouts </a>
+                    <i class="fas fa-newspaper"></i> Tin Tức </a>
                 <div class="dash-nav-dropdown-menu">
-                    <a href="blank.html" class="dash-nav-dropdown-item">Blank</a>
-                    <a href="content.html" class="dash-nav-dropdown-item">Content</a>
-                    <a href="login.html" class="dash-nav-dropdown-item">Log in</a>
-                    <a href="signup.html" class="dash-nav-dropdown-item">Sign up</a>
+                    <a href="#" class="dash-nav-dropdown-item">Thống báo</a>
+                    <a href="#" class="dash-nav-dropdown-item">Đăng thông báo</a>
+                    <a href="#" class="dash-nav-dropdown-item">Album sự kiện</a>
+                </div>
+            </div>
+            <div class="dash-nav-dropdown">
+                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                    <i class="fas fa-book"></i> Admin </a>
+                <div class="dash-nav-dropdown-menu">
+                    <a href="#" class="dash-nav-dropdown-item">Account manage</a>
+                    <a href="#" class="dash-nav-dropdown-item">Xác nhận</a>
+                    <a href="#" class="dash-nav-dropdown-item">Sign up</a>
                 </div>
             </div>
         </nav>

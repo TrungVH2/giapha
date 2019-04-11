@@ -25,4 +25,14 @@ class AdminController extends Controller
     {
         return view('admin.index');
     }
+
+    public function  listMembers()
+    {
+        return view('admin.users.list_members');
+    }
+
+    public function  addNewMember()
+    {
+        return view('admin.users.add_new');
+    }
 }

@@ -13,14 +13,17 @@
                     <table class="table table-striped table-in-card">
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Họ tên</th>
-                            <th scope="col">Năm sinh</th>
-                            <th scope="col">Quê quán</th>
-                            <th scope="col">Điện thoại</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Tên cha</th>
-                            <th scope="col">Tùy chọn</th>
+                            <th scope="col" class="text-black-50">#</th>
+                            <th scope="col" class="text-black-50">Chi họ</th>
+                            <th scope="col" class="text-black-50">Tên cha/bố</th>
+                            <th scope="col" class="text-black-50">Tên mẹ</th>
+                            <th scope="col" >Họ tên</th>
+                            <th scope="col" class="text-black-50">Vợ</th>
+                            <th scope="col" class="text-black-50">Năm sinh</th>
+                            <th scope="col" class="text-black-50">Quê quán</th>
+                            <th scope="col" class="text-black-50">Điện thoại</th>
+                            <th scope="col" class="text-black-50">Email</th>
+                            <th scope="col" class="text-black-50">Tùy chọn</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,7 +32,7 @@
                             <td>Mark</td>
                             <td>Otto</td>
                             <td>@mdo</td>
-                            <td>Mark</td>
+                            <td><a href="#">Mark</a></td>
                             <td>Otto</td>
                             <td>@mdo</td>
                             <td>Mark</td>
@@ -39,7 +42,7 @@
                             <td>Mark</td>
                             <td>Otto</td>
                             <td>@mdo</td>
-                            <td>Mark</td>
+                            <td><a href="#">Mark</a></td>
                             <td>Otto</td>
                             <td>@mdo</td>
                             <td>Mark</td>
@@ -49,7 +52,7 @@
                             <td>Mark</td>
                             <td>Otto</td>
                             <td>@mdo</td>
-                            <td>Mark</td>
+                            <td><a href="#">Mark</a></td>
                             <td>Otto</td>
                             <td>@mdo</td>
                             <td>Mark</td>

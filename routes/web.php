@@ -15,3 +15,5 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/Admin', 'AdminController@index')->name('admin');
+Route::get('/Admin/list-members', 'AdminController@listMembers')->name('list-members');
+Route::get('/Admin/add-new-member', 'AdminController@addNewMember')->name('add-new-member');
