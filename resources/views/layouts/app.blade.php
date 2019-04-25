@@ -10,6 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script src="{{ asset('js/chart-js-config.js') }}" defer></script>
 
@@ -19,7 +20,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600|Open+Sans:400,600,700" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/spur.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom_app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -35,12 +37,24 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" ></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Sơ đồ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Sơ đồ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Sơ đồ</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
+
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
