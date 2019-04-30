@@ -1,0 +1,20 @@
+body{
+    background-image: url("../img/bg-menu.jpg") !important ;
+    background-repeat: repeat;
+}
+/*
+.navbar{
+   background-color:  rgb(123, 33, 51);
+    box-sizing: border-box;
+   box-shadow:   0 0 0 2px #c6c8ca;
+}*/
+.navbar-laravel{
+    width: 100%;
+    box-shadow: 0 0 0 5px #c6c8ca;
+    background-color:  rgb(123, 33, 51);
+    z-index: 3;
+    /*border-bottom: 1px solid #e4027e;*/
+}
+.container a{
+    color: white !important;
+}

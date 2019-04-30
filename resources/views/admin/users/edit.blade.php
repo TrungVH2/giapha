@@ -8,7 +8,7 @@
                         <div class="spur-card-icon">
                             <i class="fas fa-chart-bar"></i>
                         </div>
-                        <div class="spur-card-title"> Thêm mới</div>
+                        <div class="spur-card-title"> Chỉnh sửa</div>
                     </div>
                     <div class="card-body">
                         <form>
@@ -23,11 +23,11 @@
                                 </select>
                                 <label for="mother"></label>
                                 <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Vo A1 - </option>
-                                    <option>Vo A2</option>
-                                    <option>Vo A3</option>
-                                    <option>Vo A4</option>
-                                    <option>Vo A5</option>
+                                    <option>BÀ 1 - </option>
+                                    <option>BÀ 2</option>
+                                    <option>BÀ 3</option>
+                                    <option>BÀ 4</option>
+                                    <option>BÀ 5</option>
                                 </select>
                             </div>
                             <div class="form-group col-sm-12">
@@ -35,7 +35,7 @@
                                     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
                             </div>
                             <div class="form-group col-sm-6">
-                                <img src="../img/avatar.png" width="205" height="250" class="float-left border" alt="avatar">
+                                <img src="../images/avatar.png" width="205" height="250" class="float-left border" alt="avatar">
                                 <label class="col-sm-12" for="choose-img"></label>
                                 <input type="file" class="form-control-file magin-top" id="choose-img">
                             </div>
