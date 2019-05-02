@@ -11,21 +11,42 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
-
-    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
         'password', 'remember_token',
+    ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'username',
+        'password',
+        'short_name',
+        'name',
+        'avatar',
+        'gender',
+        'birthday',
+        'diedate_at',
+        'address',
+        'phone',
+        'email',
+        'description',
+        'sort_in_family',
+        'parent_id',
+        'husband_wife_id',
+        'branch_id',
+        'layer_id',
+        'roles_id',
+        'user_id_add',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     /**
@@ -36,4 +57,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo('App\Branch','branch_id');
+    }
+
+    public function getWifeOrHusband($userId)
+    {
+        return User::where('husband_wife_id', $userId)->get();
+    }
+
+    public  function  checkExitsEmail($email){
+        return User::where('email', '=', $email)->first();
+    }
 }

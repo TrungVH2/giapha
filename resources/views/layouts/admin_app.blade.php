@@ -20,6 +20,7 @@
     <link href="{{ asset('css/spur.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom_admin.css') }}" rel="stylesheet">
     @yield('chartsjs')
+    @yield('js_common')
     <title>Admin Vo Huy</title>
 </head>
 <body>
