@@ -4,3 +4,14 @@
     padding: 20px 5px !important;
 }
 /*End - show list members*/
+.list-members .img-circle{
+    margin: -5px 0px -5px 0px !important;
+}
+
+.list-members .table th, .table td{
+    vertical-align:baseline !important;
+}
+
+.has-error .help-block strong{
+    color: red;
+}

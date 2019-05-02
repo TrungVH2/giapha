@@ -13,7 +13,7 @@ class AdminController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
 
     /**
@@ -24,15 +24,5 @@ class AdminController extends Controller
     public function index()
     {
         return view('admin.index');
-    }
-
-    public function  listMembers()
-    {
-        return view('admin.users.list_members');
-    }
-
-    public function  addNewMember()
-    {
-        return view('admin.users.add_new');
     }
 }
