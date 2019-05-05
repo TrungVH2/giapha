@@ -18,3 +18,5 @@ Route::get('/Admin', 'AdminController@index')->name('admin');
 Route::get('/Admin/list-members', 'UserController@listMembers')->name('list-members');
 Route::get('/Admin/add-new-member', 'UserController@getNewMember')->name('add-new-member');
 Route::post('/Admin/add-new-member', 'UserController@postNewMember')->name('post-add-new-member');
+Route::get('/Admin/{userId?}/edit-member', 'UserController@getEditUser')->name('edit-member');
+Route::post('/Admin/save-edit-member', 'UserController@postEditUser')->name('save-edit-member');

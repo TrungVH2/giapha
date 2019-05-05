@@ -100,7 +100,7 @@
 
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtname') ? ' has-error' : '' }}">
-                                <label class="col-form-lable" for="exampleFormControlInput1">Nhập họ tên đầy đủ *</label>
+                                <label class="col-form-lable" for="exampleFormControlInput1">Họ và tên *</label>
                                 <input type="text" class="form-control" name="txtname" id="exampleFormControlInput1" placeholder=".........">
                                 @if ($errors->has('txtname'))
                                     <san class="help-block">

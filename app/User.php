@@ -71,4 +71,24 @@ class User extends Authenticatable
     public  function  checkExitsEmail($email){
         return User::where('email', '=', $email)->first();
     }
+
+    /**
+     * get parent by parent id
+     * @param $parentId
+     * @return mixed
+     */
+    public function getParentByParentId($parentId)
+    {
+        return User::Where('id',$parentId)->OrWhere('husband_wife_id', $parentId)->get();
+    }
+
+    /**
+     * Get all children of user id
+     * @param $userId
+     * @return mixed
+     */
+    public function getChildrenByUserId($userId)
+    {
+        return User::Where('parent_id',$userId)->get();
+    }
 }
