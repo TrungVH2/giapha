@@ -9,8 +9,9 @@
                     </div>
                     <div class="spur-card-title">Danh sách thành viên trong họ</div>
                 </div>
-                <div class="card-body ">
-                    <table class="table table-striped table-in-card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                    <table class="table table-striped table-in-card" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
                             <th scope="col" class="text-black-50">#</th>
@@ -39,7 +40,8 @@
                                     <td>{{$item->address}}</td>
                                     <td>{{$item->phone}}</td>
                                     <td>
-                                        <a href="#">Thêm </a>
+                                        <a href="{{route('add-new-member')}}">Thêm </a>
+                                        <a href="{{route('edit-member', ['userId'=> $item->id])}}">Sửa </a>
                                         @if($item->roles_id == 1)
                                             <a href="#" onclick="confirm('Bạn có chắc chắn muốn xóa thành viên này không?')">
                                                 Xóa<span class="glyphicon glyphicon-remove"></span>
@@ -61,7 +63,8 @@
                                     <td>{{$item->address}}</td>
                                     <td>{{$item->phone}}</td>
                                     <td>
-                                        <a href="#">Thêm </a>
+                                        <a href="{{route('add-new-member')}}">Thêm </a>
+                                        <a href="{{route('edit-member', ['userId'=> $item->id])}}">Sửa </a>
                                         @if($item->roles_id == 1)
                                             <a href="#" onclick="confirm('Bạn có chắc chắn muốn xóa thành viên này không?')">
                                                 Xóa<span class="glyphicon glyphicon-remove"></span>
@@ -73,6 +76,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>

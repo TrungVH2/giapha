@@ -187,4 +187,31 @@ class UserController extends Controller
             'user_id_add' => $data['user_id_add'],
         ]);
     }
+
+    public function getEditUser($userId){
+
+        $user = User::find($userId);
+        $users = new User();
+        $listParent = User::all();
+        $children = $users->getChildrenByUserId($userId);
+        $parent = null;
+        if($user->parent_id){
+            $parent = $users->getParentByParentId($user->parent_id);
+        }elseif($user->husband_wife_id){
+            //get parent id of husband's parent or wife's parent
+            $parentId = User::find($user->husband_wife_id)->parent_id;
+            //get husband's parent or wife's parent
+            $parent = $users->getParentByParentId($parentId);
+        }
+        return view('admin.users.edit', ['user' => $user, 'parent'=> $parent, 'listParent'=>$listParent, 'children'=> $children]);
+    }
+
+    public function postEditUser(CreateMemberRequest $request)
+    {
+
+    }
+
+    public function delete($userId){
+
+    }
 }
