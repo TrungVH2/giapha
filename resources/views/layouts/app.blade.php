@@ -41,13 +41,16 @@
                             <a class="nav-link" ></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Sơ đồ</a>
+                            <a class="nav-link" href="{{ route('introduction') }}">Giới thiệu</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Sơ đồ</a>
+                            <a class="nav-link" href="{{ route('tree') }}">Gia phả</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Sơ đồ</a>
+                            <a class="nav-link" href="{{ route('event') }}">Sự kiện</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rule') }}">Quy định</a>
                         </li>
                     </ul>
 
@@ -59,11 +62,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -71,10 +69,14 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">Thông tin cá nhân</a>
+                                    @if(Auth::user()->roles_id == 1)
+                                    <a class="dropdown-item" href="{{ route('admin') }}">Vào trang admin</a>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        {{ __('Thoát') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

@@ -42,7 +42,7 @@
                                     <td>
                                         <a href="{{route('add-new-member')}}">Thêm </a>
                                         <a href="{{route('edit-member', ['userId'=> $item->id])}}">Sửa </a>
-                                        @if($item->roles_id == 1)
+                                        @if(Auth::user()->roles_id == 1)
                                             <a href="#" onclick="confirm('Bạn có chắc chắn muốn xóa thành viên này không?')">
                                                 Xóa<span class="glyphicon glyphicon-remove"></span>
                                             </a>
@@ -65,7 +65,7 @@
                                     <td>
                                         <a href="{{route('add-new-member')}}">Thêm </a>
                                         <a href="{{route('edit-member', ['userId'=> $item->id])}}">Sửa </a>
-                                        @if($item->roles_id == 1)
+                                        @if(Auth::user()->roles_id == 1)
                                             <a href="#" onclick="confirm('Bạn có chắc chắn muốn xóa thành viên này không?')">
                                                 Xóa<span class="glyphicon glyphicon-remove"></span>
                                             </a>

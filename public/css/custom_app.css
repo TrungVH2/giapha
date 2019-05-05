@@ -1,20 +1,22 @@
-body{
-    background-image: url("../img/bg-menu.jpg") !important ;
-    background-repeat: repeat;
-}
-/*
-.navbar{
-   background-color:  rgb(123, 33, 51);
-    box-sizing: border-box;
-   box-shadow:   0 0 0 2px #c6c8ca;
-}*/
 .navbar-laravel{
     width: 100%;
     box-shadow: 0 0 0 5px #c6c8ca;
-    background-color:  rgb(123, 33, 51);
+    background-color:  brown !important;
     z-index: 3;
     /*border-bottom: 1px solid #e4027e;*/
 }
-.container a{
-    color: white !important;
+
+
+.container .navbar-brand, .navbar-light .navbar-nav .nav-link{
+    color: #fff !important;
+}
+/*.navbar-light .navbar-nav .nav-link{
+    color: #fff;
+}*/
+.navbar-light .navbar-nav .nav-item:hover{
+    background-color: #8e5858;
+}
+
+.header-home-content{
+    padding: 10px 0px 0px 0px;
 }
