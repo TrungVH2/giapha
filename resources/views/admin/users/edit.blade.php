@@ -112,6 +112,7 @@
                                         <strong>{{ $errors->first('txtname') }}</strong>
                                     </san>
                                 @endif
+                                <input type="text" hidden="true" class="form-control" name="txtuserid" id="txtuserid" value="{{$user->id }}">
                             </div>
                             <div class="form-group col-sm-6">
                                 @if($user->avatar)
@@ -192,8 +193,8 @@
                                     </san>
                                 @endif
                             </div>
-                            <button type="submit" class="btn btn-primary float-right m-2">Đăng ký</button>
-                            <button type="clear" class="btn btn-primary float-right m-2">Nhập lại</button>
+                            <button type="submit" class="btn btn-primary float-right m-2">Lưu sửa đổi</button>
+                            <button type="reset" value="Reset" class="btn btn-primary float-right m-2">Nhập lại</button>
                         </form>
                     </div>
                 </div>

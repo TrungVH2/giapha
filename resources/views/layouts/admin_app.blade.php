@@ -58,9 +58,12 @@
                 <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
                     <i class="fas fa-book"></i> Admin </a>
                 <div class="dash-nav-dropdown-menu">
+
                     <a href="#" class="dash-nav-dropdown-item">Account manage</a>
                     <a href="#" class="dash-nav-dropdown-item">Xác nhận</a>
-                    <a href="#" class="dash-nav-dropdown-item">Sign up</a>
+                    @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="dash-nav-dropdown-item" >Tạo admin</a>
+                    @endif
                 </div>
             </div>
         </nav>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMemberRequest;
+use App\Http\Requests\EditMemberRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -166,52 +167,154 @@ class UserController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'username'  => $data['username'],
-            'password'  => $data['password'],
-            'name'      => $data['name'],
+            'username' => $data['username'],
+            'password' => $data['password'],
+            'name' => $data['name'],
             'short_name' => $data['short_name'],
-            'avatar'    => $data['avatar'],
-            'gender'    => $data['gender'],
-            'birthday'  => $data['birthday'],
-            'diedate_at'=> $data['diedate_at'],
-            'address'   => $data['address'],
-            'phone'     => $data['phone'],
-            'email'     => $data['email'],
+            'avatar' => $data['avatar'],
+            'gender' => $data['gender'],
+            'birthday' => $data['birthday'],
+            'diedate_at' => $data['diedate_at'],
+            'address' => $data['address'],
+            'phone' => $data['phone'],
+            'email' => $data['email'],
             'description' => $data['description'],
             'sort_in_family' => $data['sort_in_family'],
             'parent_id' => $data['parent_id'],
             'husband_wife_id' => $data['husband_wife_id'],
             'branch_id' => $data['branch_id'],
-            'layer_id'  => $data['layer_id'],
-            'roles_id'  => $data['roles_id'],
+            'layer_id' => $data['layer_id'],
+            'roles_id' => $data['roles_id'],
             'user_id_add' => $data['user_id_add'],
         ]);
     }
 
-    public function getEditUser($userId){
+    public function getEditUser($userId)
+    {
 
         $user = User::find($userId);
         $users = new User();
         $listParent = User::all();
         $children = $users->getChildrenByUserId($userId);
         $parent = null;
-        if($user->parent_id){
+        if ($user->parent_id) {
             $parent = $users->getParentByParentId($user->parent_id);
-        }elseif($user->husband_wife_id){
+        } elseif ($user->husband_wife_id) {
             //get parent id of husband's parent or wife's parent
             $parentId = User::find($user->husband_wife_id)->parent_id;
             //get husband's parent or wife's parent
             $parent = $users->getParentByParentId($parentId);
         }
-        return view('admin.users.edit', ['user' => $user, 'parent'=> $parent, 'listParent'=>$listParent, 'children'=> $children]);
+        return view('admin.users.edit', ['user' => $user, 'parent' => $parent, 'listParent' => $listParent, 'children' => $children]);
     }
 
-    public function postEditUser(CreateMemberRequest $request)
+    public function postEditUser(EditMemberRequest $request)
     {
+        $userId = $request->get('txtuserid');
+        $isParent = $request->get('optionsRadiosIsParent');
+        $parent = $request->get('txtparent_id');
+        $parentId = $isParent == 0 ? $parent : null;
+        $husbandWifeId = $isParent == 1 ? $parent : null;
+        $name = $request->get('txtname');
+        $strName = $this->convertVNToEN($name);
+        $username = str_replace(' ', '', $strName);
+        $shortName = null;
+        $gender = $request->get('txtgender');
+        $birthday = $request->get('txtbirthday');
+        $diedateAt = $request->get('txtdiedate_at');
+        $address = $request->get('txtaddress');
+        $phone = $request->get('txtphone');
+        $email = $request->get('email');
+        $description = $request->get('txtdescription');
+        $sortInFamily = '1';
+        $branchId = null;
+        $layerId = null;
+        if (!$email) {
+            for ($i = 1; $i <= 500; $i++) {
+                $setEmail = $username . (string)$i . '@gmail.com';
+                if (!$this->checkExitsEmail($setEmail)) {
+                    $email = $setEmail;
+                    break;
+                }
+            }
+        }
+
+        $avatar = null;
+        $filename = null;
+        if ($request->hasFile('fileAvatar')) {
+            //get img and save to local
+            //$filname = $request->get('txtFile');
+            $avatar = $request->file('fileAvatar')->getClientOriginalName();
+            $filename = time() . '_' . $avatar;
+            $destination = base_path() . '/public/uploads';
+            $request->file('fileAvatar')->move($destination, $filename);
+        }
+
+
+        $data = [
+            'username' => $username,
+            'password' => Hash::make('0974839268'),
+            'name' => $name,
+            'short_name' => $shortName,
+            'avatar' => $filename,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'diedate_at' => $diedateAt,
+            'address' => $address,
+            'phone' => $phone,
+            //'email' => $email,
+            'description' => $description,
+            'sort_in_family' => $sortInFamily,
+            'parent_id' => $parentId,
+            'husband_wife_id' => $husbandWifeId,
+            'branch_id' => $branchId,
+            'layer_id' => $layerId,
+            'user_id_add' => Auth::user()->id,
+        ];
+        $user = User::find($userId);
+        if ($user) {
+            $user->username = $data['username'];
+            $user->password = $data['password'];
+            $user->name = $data['name'];
+            $user->short_name = $data['short_name'];
+            if($avatar){
+                $user->avatar = $data['avatar'];
+            }
+            $user->gender = $data['gender'];
+            $user->birthday = $data['birthday'];
+            $user->diedate_at = $data['diedate_at'];
+            $user->address = $data['address'];
+            $user->phone = $data['phone'];
+            //$user->email = $data['email'];
+            $user->description = $data['description'];
+            $user->sort_in_family = $data['sort_in_family'];
+            $user->parent_id = $data['parent_id'];
+            $user->husband_wife_id = $data['husband_wife_id'];
+            $user->branch_id = $data['branch_id'];
+            $user->layer_id = $data['layer_id'];
+            $user->user_id_add = $data['user_id_add'];
+            if ($user->save()) {
+                return redirect()->route('list-members');
+            }
+            return redirect()->back()->withErrors(['error' => 'Chỉnh sửa thông tin thất bại!']);
+        } else {
+            return redirect()->back()->withErrors(['error' => 'Thành viên này không tồn tại trong hệ thống!']);
+        }
 
     }
 
-    public function delete($userId){
+    /**
+     * Delete user by id
+     * @param $userId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete($userId)
+    {
+        if ($userId) {
+            $users = User::find($userId);
+            $users->delete();
 
+            return redirect()->back()->with(['successful' => 'Xóa thành viên thành công!']);
+        }
     }
 }

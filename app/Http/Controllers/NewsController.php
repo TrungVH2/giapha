@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class NewsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -21,13 +21,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function introduction()
     {
-        return view('home');
+        return view('news.introduction');
     }
 
-    public function getTree()
+    public function rule()
     {
-        return view('tree.tree');
+        return view('news.rule');
     }
 }
