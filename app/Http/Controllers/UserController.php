@@ -39,9 +39,6 @@ class UserController extends Controller
 
     public function getNewMember(Request $request)
     {
-        $xx = $request->get('userId');
-        if ($xx != null)
-            dd($xx);
         $listParent = User::all();
         return view('admin.users.add', ['listParent' => $listParent]);
     }

@@ -22,6 +22,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom_app.css') }}" rel="stylesheet">
+    @yield('tree')
 </head>
 <body>
     <div id="app">
@@ -53,7 +54,11 @@
                             <a class="nav-link" href="{{ route('rule') }}">Quy định</a>
                         </li>
                     </ul>
-
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <img src="../img/icon-noterbook.png" height="40">
+                        </li>
+                    </ul>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->

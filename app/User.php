@@ -91,4 +91,17 @@ class User extends Authenticatable
     {
         return User::Where('parent_id',$userId)->get();
     }
+
+    /**Start show tree **/
+
+    /**
+     * get ông tổ của cả họ.
+     */
+    public function getMembersIndex()
+    {
+        return User::where('roles_id',3)->first();
+    }
+
+    /**End show tree **/
+
 }
