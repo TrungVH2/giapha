@@ -51,9 +51,11 @@ class UserController extends Controller
     public function getWifeHusband(Request $request)
     {
         $userId = $request->get('userId');
-        $wifeHusband = User::where('husband_wife_id', '=', $userId)->get();
+        $user = new User();
+        $wifeHusband = $user->getWifeOrHusband($userId);
+        $familyUser =$user->getFamilyByUserId($userId);
         //return view('admin.users.add', compact('wifeHusband'));
-        return response()->json(['wifeHusband' => $wifeHusband]);
+        return response()->json(['wifeHusband' => $wifeHusband, 'familyUser' => $familyUser]);
     }
 
     /**
@@ -217,7 +219,13 @@ class UserController extends Controller
             //get husband's parent or wife's parent
             $parent = $users->getParentByParentId($parentId);
         }
-        return view('admin.users.edit', ['user' => $user, 'parent' => $parent, 'listParent' => $listParent, 'children' => $children]);
+        return view('admin.users.edit',
+                    [
+                        'user' => $user,
+                        'parent' => $parent,
+                        'listParent' => $listParent,
+                        'children' => $children
+                    ]);
     }
 
     public function postEditUser(EditMemberRequest $request)
@@ -225,6 +233,7 @@ class UserController extends Controller
         $userId = $request->get('txtuserid');
         $isParent = $request->get('optionsRadiosIsParent');
         $parent = $request->get('txtparent_id');
+        $motherId = $request->get('mother_id');
         $parentId = $isParent == 0 ? $parent : null;
         $husbandWifeId = $isParent == 1 ? $parent : null;
         $name = $request->get('txtname');
@@ -253,6 +262,15 @@ class UserController extends Controller
             $request->file('fileAvatar')->move($destination, $filename);
         }
 
+        $user = User::find($userId);
+
+        if(!$avatar && ($user->avatar = 'man.png' || $user->avatar = 'girl.png' || $user->avatar = null)){
+            if($gender == 1){
+                $filename = 'man.png';
+            }else{
+                $filename = 'girl.png';
+            }
+        }
         $data = [
             'username' => $username,
             'password' => Hash::make('0974839268'),
@@ -268,20 +286,19 @@ class UserController extends Controller
             'description' => $description,
             'sort_in_family' => $sortInFamily,
             'parent_id' => $parentId,
+            'mother_id' => $motherId,
             'husband_wife_id' => $husbandWifeId,
             'branch_id' => $branchId,
             'layer_id' => $layerId,
             'user_id_add' => Auth::user()->id,
         ];
-        $user = User::find($userId);
+
         if ($user) {
             $user->username = $data['username'];
             $user->password = $data['password'];
             $user->name = $data['name'];
             $user->short_name = $data['short_name'];
-            if($avatar){
-                $user->avatar = $data['avatar'];
-            }
+            $user->avatar = $data['avatar'];
             $user->gender = $data['gender'];
             $user->birthday = $data['birthday'];
             $user->diedate_at = $data['diedate_at'];
@@ -291,6 +308,7 @@ class UserController extends Controller
             $user->description = $data['description'];
             $user->sort_in_family = $data['sort_in_family'];
             $user->parent_id = $data['parent_id'];
+            $user->mother_id = $data['mother_id'];
             $user->husband_wife_id = $data['husband_wife_id'];
             $user->branch_id = $data['branch_id'];
             $user->layer_id = $data['layer_id'];

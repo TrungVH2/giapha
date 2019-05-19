@@ -18,15 +18,6 @@
         function checkControllWife(input) {
             $('#motherSelect').hide();
         }
-        $.ajaxSetup({
-
-            headers: {
-
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-
-            }
-
-        });
 
         $(document).ready(function(){
             $('#motherSelect').hide();
@@ -37,7 +28,7 @@
 
             $("#txtparent").change(function(e) {
                 var userId = this.value;
-
+                var parentId = $("#"+this.value).val();
                 if(userId != null && userId != ''){
                     $.ajax({
                         headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') },
@@ -59,6 +50,50 @@
                                     $("#motherSelect").html('');
                                     $("#motherSelect").hide();
                                 }
+                                //Set data family when choose people relationship
+                                $grandparent = '';
+                                $isparent = '';
+                                $ischild = '';
+
+                                $.each($_data['familyUser'], function( key, value ){
+                                    $item = ' '
+                                        +'<div class="float-left mx-2">'
+                                        +'<img src="../uploads/'+value['avatar']+'" title="'+value['name']+'" width="100"  id="txtimagefather" height="125" class="border" alt="'+value['name']+'"><br/>'
+                                        +'<label for="name" >'+value['name']+'</label>'
+                                        +'</div>';
+                                    if(value['id'] == parentId || value['husband_wife_id'] == parentId)
+                                    {
+                                        $grandparent += $item;
+                                    }
+
+                                    if(value['id'] == userId || value['husband_wife_id'] == userId)
+                                    {
+                                        $isparent +=$item;
+                                    }
+
+                                    if(value['parent_id'] == userId)
+                                    {
+                                        $ischild +=$item;
+                                    }
+                                });
+                                if($grandparent!= ''){
+                                    $(".grandparent").html($grandparent);
+                                }else{
+                                    $(".grandparent").html('');
+                                }
+
+                                if($isparent!= ''){
+                                    $(".is-parent").html($isparent);
+                                }else{
+                                    $(".is-parent").html('');
+                                }
+
+                                if($ischild!= ''){
+                                    $(".is-child").html($ischild);
+                                }else{
+                                    $(".is-child").html('');
+                                }
+
                             }else{
                                 $("#motherSelect").html('');
                                 $("#motherSelect").hide();
@@ -78,6 +113,9 @@
     </script>
 @endsection
 @section('content')
+    @foreach($listParent as $user)
+        <input type="hidden" class="form-control" value="{{$user->parent_id}}" id="{{$user->id}}" placeholder="">
+    @endforeach
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-6">
@@ -157,7 +195,7 @@
                                 @endif
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdieldate_at') ? ' has-error' : '' }}">
-                                <label id="dieldate" style="color: #1b4b72; ">Ngày mất <i class="fas fa-arrow-down"></i></label>
+                                <label id="dieldate" style="color: #1b4b72; ">Ngày mất <i class="fas fa-hand-point-left"></i></label>
                                 <input type="date" style="display: none" name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" placeholder=" ">
                                 @if ($errors->has('txtdieldate_at'))
                                     <san class="help-block">
@@ -232,22 +270,50 @@
                         <div class="spur-card-title"> Gia đình:<label id="gduser"></label></div>
                     </div>
                     <div class="card-body">
-                        <label for="granderFather" class="float-left">Bố mẹ:</label>
-                        <div class="form-group col-sm-12 text-center">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                        <div class="form-row col-sm-12">
+                            <label for="granderFather" class="float-left">Bố mẹ:</label>
+                            <div class="form-group mx-auto grandparent text-center">
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/avatar.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Ông nội</label>
+                                </div>
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/girl.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Bà nội</label>
+                                </div>
+                            </div>
                         </div>
-                        <label for="granderFather" class="float-left">Tôi--:</label>
-                        <div class="form-group col-sm-12 text-center">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
-                        </div>
-                        <label for="granderFather" class="float-left">Các con:</label>
-                        <div class="form-group col-sm-12 text-center">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
-                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
 
+                        <div class="form-row col-sm-12">
+                            <label for="granderFather" class="float-left">Gia chủ:</label>
+                            <div class="form-group mx-auto is-parent text-center">
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/avatar.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Bố mẹ/ vợ chồng</label>
+                                </div>
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/girl.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Bố mẹ/ vợ chồng</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row col-sm-12">
+                            <label for="granderFather" class="float-left">Các con:</label>
+                            <div class="form-group mx-auto is-child text-center">
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/avatar.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Con đầu</label>
+                                </div>
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/avatar.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Con thứ 2</label>
+                                </div>
+                                <div class="float-left mx-2">
+                                    <img src="../uploads/girl.png" title="" width="100"  id="txtimagefather" height="125" class="border" alt=""><br/>
+                                    <label for="txtimagefather" >Con thứ 3</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

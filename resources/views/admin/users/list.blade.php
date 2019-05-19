@@ -36,7 +36,7 @@
                                         <td><a href="#"><img src="../uploads/{{$item->avatar}}" class="img-circle" title="{{$item->name}}" alt="{{$item->name}}" width="50" height="50"></a></td>
                                     @endif
                                     <td>{{$item->name}}</td>
-                                    <td>{{$item->birthday}}</td>
+                                    <td>{{date('d/m/Y', strtotime($item->birthday))}}</td>
                                     <td>{{$item->address}}</td>
                                     <td>{{$item->phone}}</td>
                                     <td>

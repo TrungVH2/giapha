@@ -93,6 +93,22 @@ class User extends Authenticatable
         return User::Where('parent_id',$userId)->Orderby('sort_in_family', 'ASC')->get();
     }
 
+    /**
+     * Get all children of user id
+     * @param $userId
+     * @return mixed
+     */
+    public function getFamilyByUserId($userId)
+    {
+        $user = User::find($userId);
+        return User::Where('id',$userId)
+                    ->OrWhere('husband_wife_id', '=', $userId)
+                    ->OrWhere('id','=',$user->parent_id)
+                    ->OrWhere('husband_wife_id', '=', $user->parent_id)
+                    ->OrWhere('parent_id', '=', $userId)
+                    ->Orderby('sort_in_family', 'DESC')->get();
+    }
+
     /**Start show tree **/
 
     /**
