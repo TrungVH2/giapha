@@ -39,6 +39,7 @@ class User extends Authenticatable
         'description',
         'sort_in_family',
         'parent_id',
+        'mother_id',
         'husband_wife_id',
         'branch_id',
         'layer_id',
@@ -89,7 +90,7 @@ class User extends Authenticatable
      */
     public function getChildrenByUserId($userId)
     {
-        return User::Where('parent_id',$userId)->get();
+        return User::Where('parent_id',$userId)->Orderby('sort_in_family', 'ASC')->get();
     }
 
     /**Start show tree **/

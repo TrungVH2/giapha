@@ -29,7 +29,7 @@ class CreateMemberRequest extends Request
             'txtdieldate_at'   => 'max:10',
             'txtaddress'       => 'max:255',
             'txtphone'         => 'max:11',
-            'email'         => ['email', 'max:255', 'unique:users'],
+            //'email'         => ['email', 'max:255', 'unique:users'],
             'txtparent_id'     => 'required',
         ];
     }
@@ -44,9 +44,9 @@ class CreateMemberRequest extends Request
             'txtdiedate_at.max'    => 'Ngày mất không đúng định dạng.',
             'txtaddress.max'       => 'Địa chỉ nhập dài quá.',
             'txtphone.max'         => 'Số điện thoại nhập tối đa 11 số thôi.',
-            'txtemail.email'       => 'Email không đúng định dạng',
-            'txtemail.max'         => 'Email không được nhập quá 255 ký tự.',
-            'txtemail.unique'      => 'Email là để đăng nhập hệ thông vui lòng không nhập trùng.',
+//            'txtemail.email'       => 'Email không đúng định dạng',
+//            'txtemail.max'         => 'Email không được nhập quá 255 ký tự.',
+//            'txtemail.unique'      => 'Email là để đăng nhập hệ thông vui lòng không nhập trùng.',
             'txtparent_id.required' => 'Chưa chọn người liên quan Bố, mẹ/ Vợ chồng.',
         ];
     }

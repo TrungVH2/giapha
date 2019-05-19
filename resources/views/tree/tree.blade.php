@@ -9,12 +9,12 @@
     </style>
 @endsection
 @section('content')
-        <div class="tree text-center" style="border: 1px solid red; ">
+        <div class="tree text-center">
             <ul>
                 @if($userIndex)
                     <li>
                         <a href="/home/{{$userIndex->id}}/detail">
-                            <div><img src="{{'/uploads/'.$userIndex->avatar}}" style="width: 100px; height: 125px"><br><p>{{$userIndex->name}}</p></div>
+                            <div><img src="{{'../uploads/'.$userIndex->avatar}}" style="width: 100px; height: 125px"><br><p>{{$userIndex->name}}</p></div>
                             <?php
                             $home = new App\Http\Controllers\HomeController();
 

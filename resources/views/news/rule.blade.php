@@ -6,7 +6,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    Quy định đang trong quá trình xay dựng!
+                    Quy định đang trong quá trình xây dựng!
+
                 </div>
             </div>
         </div>

@@ -39,8 +39,21 @@ class UserController extends Controller
 
     public function getNewMember(Request $request)
     {
-        $listParent = User::all();
+        $listParent = User::where('parent_id', '<>', null)->Orwhere('roles_id', '=', '3')->get();
         return view('admin.users.add', ['listParent' => $listParent]);
+    }
+
+    /**
+     * get wife husband set for data dropdown wife or husband
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getWifeHusband(Request $request)
+    {
+        $userId = $request->get('userId');
+        $wifeHusband = User::where('husband_wife_id', '=', $userId)->get();
+        //return view('admin.users.add', compact('wifeHusband'));
+        return response()->json(['wifeHusband' => $wifeHusband]);
     }
 
     /**
@@ -87,13 +100,14 @@ class UserController extends Controller
     {
         $isParent = $request->get('optionsRadiosIsParent');
         $parent = $request->get('txtparent_id');
+        $motherId = $request->get('mother_id');
         $parentId = $isParent == 0 ? $parent : null;
         $husbandWifeId = $isParent == 1 ? $parent : null;
         $name = $request->get('txtname');
         $strName = $this->convertVNToEN($name);
         $username = str_replace(' ', '', $strName);
         $shortName = null;
-        $gender = $request->get('txtgender') == 'on' ? 1 : 0;
+        $gender = $request->get('txtgender');
         $birthday = $request->get('txtbirthday');
         $diedateAt = $request->get('txtdiedate_at');
         $address = $request->get('txtaddress');
@@ -105,7 +119,7 @@ class UserController extends Controller
         $layerId = null;
         if (!$email) {
             for ($i = 1; $i <= 500; $i++) {
-                $setEmail = $username . (string)$i . '@gmail.com';
+                $setEmail = strtolower($username) . (string)$i . '@gmail.com';
                 if (!$this->checkExitsEmail($setEmail)) {
                     $email = $setEmail;
                     break;
@@ -117,7 +131,7 @@ class UserController extends Controller
         $filename = null;
         if ($request->hasFile('fileAvatar')) {
             //get img and save to local
-            //$filname = $request->get('txtFile');
+            //$filename = $request->get('txtFile');
             $avatar = $request->file('fileAvatar')->getClientOriginalName();
             $filename = time() . '_' . $avatar;
             $destination = base_path() . '/public/uploads';
@@ -131,7 +145,6 @@ class UserController extends Controller
         if (!$avatar && ($gender == 0)) {
             $filename = 'girl.png';
         }
-
         $data = [
             'username' => $username,
             'password' => Hash::make('0974839268'),
@@ -147,6 +160,7 @@ class UserController extends Controller
             'description' => $description,
             'sort_in_family' => $sortInFamily,
             'parent_id' => $parentId,
+            'mother_id' => $motherId,
             'husband_wife_id' => $husbandWifeId,
             'branch_id' => $branchId,
             'layer_id' => $layerId,
@@ -178,6 +192,7 @@ class UserController extends Controller
             'description' => $data['description'],
             'sort_in_family' => $data['sort_in_family'],
             'parent_id' => $data['parent_id'],
+            'mother_id' => $data['mother_id'],
             'husband_wife_id' => $data['husband_wife_id'],
             'branch_id' => $data['branch_id'],
             'layer_id' => $data['layer_id'],
@@ -226,15 +241,6 @@ class UserController extends Controller
         $sortInFamily = '1';
         $branchId = null;
         $layerId = null;
-        if (!$email) {
-            for ($i = 1; $i <= 500; $i++) {
-                $setEmail = $username . (string)$i . '@gmail.com';
-                if (!$this->checkExitsEmail($setEmail)) {
-                    $email = $setEmail;
-                    break;
-                }
-            }
-        }
 
         $avatar = null;
         $filename = null;
@@ -246,7 +252,6 @@ class UserController extends Controller
             $destination = base_path() . '/public/uploads';
             $request->file('fileAvatar')->move($destination, $filename);
         }
-
 
         $data = [
             'username' => $username,

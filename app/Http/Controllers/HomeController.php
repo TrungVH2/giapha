@@ -56,7 +56,7 @@ class HomeController extends Controller
         if ($wife) {
             foreach ($wife as $k => $it) {
                 echo '<div>';
-                echo '<img src="/uploads/' . $it['avatar'] . '" style="width: 100px; height: 125px"><br><p>';
+                echo '<img src="../uploads/' . $it['avatar'] . '" style="width: 100px; height: 125px"><br><p>';
                 echo $it['name'];
                 echo '</p>';
                 echo '</div>';
@@ -92,7 +92,7 @@ class HomeController extends Controller
                 echo '<li>';
                 echo '<a href="/home/' . $item['id'] . '/detail">';
                 echo '<div>';
-                echo '<img src="/uploads/' . $item['images'] . '" style="width: 100px; height: 125px"><br><p>';
+                echo '<img src="../uploads/' . $item['avatar'] . '" style="width: 100px; height: 125px"><br><p>';
                 echo $item['name'];
                 echo '</p>';
                 echo '</div>';

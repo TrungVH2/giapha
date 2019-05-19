@@ -14,29 +14,67 @@
         function checkControllParent(input) {
             $('#motherSelect').show();
         }
-        
+
         function checkControllWife(input) {
             $('#motherSelect').hide();
         }
-        function getWifeOrHusband(user)
-        {
-            var userId = user.selectedIndex;
-            if(userId != null && userId != ''){
-                $.ajax(
-                    {
-                        url: '?userId=' + userId,
-                        type: 'Get',
-                        dataType: 'html'
-                    }
-                ).done(function (data) {
-                    alert(data);
-                    }
-                ).fail(function (jqXHR, ajaxOptions, thrownError) {
-                        alert('Xảy ra lỗi');
-                    }
-                )
+        $.ajaxSetup({
+
+            headers: {
+
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+
             }
-        }
+
+        });
+
+        $(document).ready(function(){
+            $('#motherSelect').hide();
+
+            $("#dieldate").click(function(){
+                $("#txtdieldate").toggle();
+            });
+
+            $("#txtparent").change(function(e) {
+                var userId = this.value;
+
+                if(userId != null && userId != ''){
+                    $.ajax({
+                        headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') },
+                        url: "{{ route('get-wife-husband') }}",
+                        method: 'POST',
+                        data : {userId:userId, _token: "{{ csrf_token() }}"},
+                        dataType: 'html',
+                        success: function(data){
+                            if(data)
+                            {  $_data = $.parseJSON(data);
+                                $options ='';
+                                $.each( $_data['wifeHusband'], function( key, value ) {
+                                    $options +=  ' <option selected value="'+value['id']+'"> - '+ value['name'] +'</option>';
+                                });
+                                if($options!= ''){
+                                    $("#motherSelect").html($options);
+                                    $("#motherSelect").show();
+                                }else{
+                                    $("#motherSelect").html('');
+                                    $("#motherSelect").hide();
+                                }
+                            }else{
+                                $("#motherSelect").html('');
+                                $("#motherSelect").hide();
+                            }
+                        },
+                        error: function(error){
+                            console.log(error)
+                        }
+                    });
+                }
+                else {
+                    $("#motherSelect").html('');
+                    $("#motherSelect").hide();
+                }
+            });
+        });
     </script>
 @endsection
 @section('content')
@@ -78,7 +116,7 @@
                                 </label>
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtparent_id') ? ' has-error' : '' }}">
-                                <select class="form-control" name="txtparent_id" onchange="getWifeOrHusband(this)" id="txtparent">
+                                <select class="form-control" name="txtparent_id" id="txtparent">
                                     <option value= "" selected>-- Chọn người liên quan --</option>
                                     @foreach($listParent as $user)
                                             <option value= "{{$user->id}}"  @if(Request::old('txtparent_id') == $user->id) selected @endif>- {{$user->name}}</option>
@@ -90,18 +128,14 @@
                                     </san>
                                 @endif
                                 <label for="mother"></label>
-                                <select class="form-control" id="motherSelect">
-                                    <option>Vo A1 - </option>
-                                    <option>Vo A2</option>
-                                    <option>Vo A3</option>
-                                    <option>Vo A4</option>
-                                    <option>Vo A5</option>
+                                <select class="form-control" name="mother_id" id="motherSelect">
+                                    {{--<option selected disabled >chưa có vợ/chồng</option>--}}
                                 </select>
 
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtname') ? ' has-error' : '' }}">
                                 <label class="col-form-lable" for="exampleFormControlInput1">Họ và tên *</label>
-                                <input type="text" class="form-control" name="txtname" id="exampleFormControlInput1" placeholder=".........">
+                                <input type="text" class="form-control" name="txtname" id="txtname" placeholder="">
                                 @if ($errors->has('txtname'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtname') }}</strong>
@@ -123,8 +157,8 @@
                                 @endif
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdieldate_at') ? ' has-error' : '' }}">
-                                <label for="exampleFormControlInput1">Ngày mất</label>
-                                <input type="date" name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" placeholder=" ">
+                                <label id="dieldate" style="color: #1b4b72; ">Ngày mất <i class="fas fa-arrow-down"></i></label>
+                                <input type="date" style="display: none" name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" placeholder=" ">
                                 @if ($errors->has('txtdieldate_at'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtdieldate_at') }}</strong>
@@ -165,12 +199,12 @@
                                     </san>
                                 @endif
                             </div>
-                            <div class="form-group col-sm-12 {{ $errors->has('txtemail') ? ' has-error' : '' }}">
+                            <div class="form-group col-sm-12 {{ $errors->has('email') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Email</label>
                                 <input type="email" class="form-control" name="email" id="exampleFormControlInput1" placeholder="vohuy...@gmail.com">
-                                @if ($errors->has('txtemail'))
+                                @if ($errors->has('email'))
                                     <san class="help-block">
-                                        <strong>{{ $errors->first('txtemail') }}</strong>
+                                        <strong>{{ $errors->first('email') }}</strong>
                                     </san>
                                 @endif
                             </div>
@@ -195,10 +229,26 @@
                         <div class="spur-card-icon">
                             <i class="fas fa-chart-bar"></i>
                         </div>
-                        <div class="spur-card-title"> Gia đình</div>
+                        <div class="spur-card-title"> Gia đình:<label id="gduser"></label></div>
                     </div>
                     <div class="card-body">
-                        cay gia đình 3 thế hệ.
+                        <label for="granderFather" class="float-left">Bố mẹ:</label>
+                        <div class="form-group col-sm-12 text-center">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                        </div>
+                        <label for="granderFather" class="float-left">Tôi--:</label>
+                        <div class="form-group col-sm-12 text-center">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                        </div>
+                        <label for="granderFather" class="float-left">Các con:</label>
+                        <div class="form-group col-sm-12 text-center">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+                            <img src="../uploads/avatar.png" title="" width="100" id="txtimagefather" height="125" class="border" alt="">
+
+                        </div>
                     </div>
                 </div>
             </div>
