@@ -6,7 +6,7 @@
 }
 .tree ul {
 
-    padding-top: 20px;
+    padding-top: 30px;
     position: relative;
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
@@ -73,11 +73,12 @@ right connector from last child*/
     content: '';
     position: absolute; top: 0; left: 50%;
     border-left: 1px solid #ccc;
-    width: 0; height: 20px;
+    width: 0; height: 30px;
 }
 .tree li a{
     border: 1px solid #ccc;
     padding-right: 5px;
+    margin-bottom: -7px !important;
     text-decoration: none;
     color: #000;
     font-family: arial, verdana, tahoma;

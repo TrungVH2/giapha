@@ -1,5 +1,6 @@
-@extends('layouts.admin_app')
-@section('js_common')
+@extends('layouts.app')
+
+@section('tree')
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
     <script>
         function showImage(input) {
@@ -125,15 +126,72 @@
     </script>
 @endsection
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container">
+        <div class="row justify-content-center">
             <div class="col-xl-6">
                 <div class="card spur-card">
                     <div class="card-header">
                         <div class="spur-card-icon">
                             <i class="fas fa-chart-bar"></i>
                         </div>
-                        <div class="spur-card-title"> Chỉnh sửa thông: <label style="color: blue;">{{$user->name}}</label></div>
+                        <div class="spur-card-title"> Gia đình 3 thế hệ của : <label style="color: blue;">{{$user->name}}</label></div>
+                    </div>
+                    <div class="card-body ">
+                        <div class="form-row col-sm-12">
+                            <label for="granderFather" class="float-left">Bố mẹ:</label>
+                            <div class="form-group mx-auto grandparent text-center">
+                                @if($parent)
+                                    @foreach($parent as $item)
+                                        <div class="float-left mx-2">
+                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}" width="100" id="txtimagefather" height="125" class="border" alt="{{$item->name}}"><br/>
+                                            <label for="txtimagefather" >{{$item->name}}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-row col-sm-12">
+                            <label for="father" class="float-left">Tôi:</label>
+                            <div class="form-group mx-auto is-parent text-center">
+                                <div class="float-left mx-2">
+                                    <img src="/uploads/{{$user->avatar?$user->avatar:'avatar.png'}}" title="{{$user->name}}"  width="100" id="txtimageuser" height="125" class="border" alt="{{$user->name}}"><br/>
+                                    <label for="xxx" >{{$user->name}}</label>
+                                </div>
+                                @foreach($listParent as $item)
+                                    @if($item->husband_wife_id == $user->id || $item->id == $user->husband_wife_id)
+                                        <div class="float-left mx-2">
+                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}"  width="100" id="txtimagewife" height="125" class="border" alt="{{$item->name}}"><br/>
+                                            <label for="ccc" >{{$item->name}}</label>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="form-row col-sm-12">
+                            <label for="children" class="float-left">Các con:</label>
+                            <div class="form-group mx-auto is-child text-center">
+                                @if(count($children) > 0)
+                                    @foreach($children as $item)
+                                        <div class="float-left mx-2">
+                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" width="100" title="{{$item->name}}"  id="txtimagechildren" height="125" class="border" alt="{{$item->name}}"><br/>
+                                            <label for="cccai" >{{$item->name}}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card spur-card">
+                    <div class="card-header">
+                        <div class="spur-card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="spur-card-title"> Thông tin cá nhân : <label style="color: blue;">{{$user->name}}</label></div>
                     </div>
                     <div class="card-body">
                         @if (Session()->has('error'))
@@ -281,63 +339,6 @@
                             <button type="submit" class="btn btn-primary float-right m-2">Lưu sửa đổi</button>
                             <button type="reset" value="Reset" class="btn btn-primary float-right m-2">Nhập lại</button>
                         </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6">
-                <div class="card spur-card">
-                    <div class="card-header">
-                        <div class="spur-card-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="spur-card-title"> Gia đình 3 thế hệ của : <label style="color: blue;">{{$user->name}}</label></div>
-                    </div>
-                    <div class="card-body ">
-                        <div class="form-row col-sm-12">
-                            <label for="granderFather" class="float-left">Bố mẹ:</label>
-                            <div class="form-group mx-auto grandparent text-center">
-                                @if($parent)
-                                    @foreach($parent as $item)
-                                        <div class="float-left mx-2">
-                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}" width="100" id="txtimagefather" height="125" class="border" alt="{{$item->name}}"><br/>
-                                            <label for="txtimagefather" >{{$item->name}}</label>
-                                        </div>
-                                        @endforeach
-                                    @endif
-                            </div>
-                        </div>
-
-                        <div class="form-row col-sm-12">
-                            <label for="father" class="float-left">Tôi:</label>
-                            <div class="form-group mx-auto is-parent text-center">
-                                <div class="float-left mx-2">
-                                    <img src="/uploads/{{$user->avatar?$user->avatar:'avatar.png'}}" title="{{$user->name}}"  width="100" id="txtimageuser" height="125" class="border" alt="{{$user->name}}"><br/>
-                                    <label for="xxx" >{{$user->name}}</label>
-                                </div>
-                                @foreach($listParent as $item)
-                                    @if($item->husband_wife_id == $user->id || $item->id == $user->husband_wife_id)
-                                        <div class="float-left mx-2">
-                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}"  width="100" id="txtimagewife" height="125" class="border" alt="{{$item->name}}"><br/>
-                                            <label for="ccc" >{{$item->name}}</label>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="form-row col-sm-12">
-                            <label for="children" class="float-left">Các con:</label>
-                            <div class="form-group mx-auto is-child text-center">
-                                @if(count($children) > 0)
-                                    @foreach($children as $item)
-                                        <div class="float-left mx-2">
-                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" width="100" title="{{$item->name}}"  id="txtimagechildren" height="125" class="border" alt="{{$item->name}}"><br/>
-                                            <label for="cccai" >{{$item->name}}</label>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

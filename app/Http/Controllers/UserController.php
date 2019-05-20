@@ -205,7 +205,6 @@ class UserController extends Controller
 
     public function getEditUser($userId)
     {
-
         $user = User::find($userId);
         $users = new User();
         $listParent = User::all();

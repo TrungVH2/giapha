@@ -68,19 +68,19 @@
     </style>
 
     <script>
-        // $(".zoom-remove").click(function(){
-        //     $(".tree").removeClass('');
-        // });
-        //
-        // $(".zoom-add").click(function(){
-        //     $(".tree").removeClass('');
-        // });
+       function removeZoomClass() {
+           $(".tree").removeClass('zoom-50');
+        }
+
+        function addZoomClass() {
+           $(".tree").addClass('zoom-50');
+        }
     </script>
 @endsection
 @section('content')
     <div class="zoom-tree">
-        <label class="zoom-remove"><i class="fa fa-search-minus"></i></label>
-        <label class="zoom-add"><i class="fa fa-search-plus"></i></label>
+        <a class="zoom-remove" onclick="removeZoomClass();"><i class="fa fa-search-minus"></i></a>
+        <a class="zoom-add" onclick="addZoomClass();"><i class="fa fa-search-plus"></i></a>
     </div>
         <div class="tree text-center">
             <ul>
