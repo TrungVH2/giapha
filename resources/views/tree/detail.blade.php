@@ -22,7 +22,21 @@
             $("#motherSelect").hide();
         }
 
+        function checkChild(input){
+            $(".husband_wife").hide();
+            $(".add-child").show();
+            $(".wife-show").show();
+        }
+
+        function checkHusbandWife(){
+            $(".add-child").hide();
+            $(".husband_wife").show();
+            $(".wife-show").hide();
+        }
+
         $(document).ready(function(){
+
+            $(".husband_wife").hide();
 
             if($("#optionsRadiosInline1").is(":checked"))
             {
@@ -128,11 +142,11 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-xl-6">
+            <div class="col-xl-6" style="margin-bottom: 5px">
                 <div class="card spur-card">
                     <div class="card-header">
                         <div class="spur-card-icon">
-                            <i class="fas fa-chart-bar"></i>
+                            <i class="fas fa-user-shield"></i>
                         </div>
                         <div class="spur-card-title"> Gia đình 3 thế hệ của : <label style="color: blue;">{{$user->name}}</label></div>
                     </div>
@@ -183,15 +197,17 @@
                             </div>
                         </div>
                     </div>
+                    <div  class="col-sm-12 float-right pb-2">
+                        @if(Auth::user()->id = $user->id || ($user->roles_id = 1) || (Auth::user()->id = $user->parent_id))
+                            <button type="button" class="addChild btn btn-primary m-md-2 float-right" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-user-plus"></i>  Thêm thành viên mới</button>
+                        @endif
+                    </div>
                 </div>
             </div>
             <div class="col-xl-6">
                 <div class="card spur-card">
                     <div class="card-header">
-                        <div class="spur-card-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="spur-card-title"> Thông tin cá nhân : <label style="color: blue;">{{$user->name}}</label></div>
+                        <div class="spur-card-title"> <i class="fas fa-paperclip"></i> Thông tin cá nhân : <label style="color: blue;">{{$user->name}}</label></div>
                     </div>
                     <div class="card-body">
                         @if (Session()->has('error'))
@@ -208,22 +224,24 @@
                                 </ul>
                             </div>
                         @endif
-                        <form action="{{route('save-edit-member')}}" method="POST" role="form" enctype="multipart/form-data">
+                        <form aria-disabled="true" action="{{route('save-edit-member')}}" method="POST" role="form" enctype="multipart/form-data">
                             {{ csrf_field() }}
-                            <div class="form-group col-sm-12">
-                                <label style="color: blue;">Bạn là ai?</label>
-                                <br>
-                                <label class="radio-inline">
-                                    <input type="radio" name="optionsRadiosIsParent" onchange="checkControllParent(this)" id="optionsRadiosInline2" value="0"
+                            <label style="color: blue;">Bạn là ai?</label>
+                            <div class="form-group row radio-inline col-sm-12">
+                                <div class="col-sm-6">
+                                    <input type="radio" disabled name="optionsRadiosIsParent" onchange="checkControllParent(this)" id="optionsRadiosInline2" value="0"
                                            @if(isset($user->parent_id)|| (!isset($user->parent_id) && !isset($user->husband_wife_id))) checked @endif>
-                                    Con của cha/mẹ (Bố/Mẹ)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="optionsRadiosIsParent" onchange="checkControllWife(this)" id="optionsRadiosInline1" value="1"
+                                    <label >Con của cha/mẹ (Bố/Mẹ)</label>
+                                </div>
+                                <div class="col-sm-6 p-lg-0">
+                                    <input type="radio" disabled name="optionsRadiosIsParent" onchange="checkControllWife(this)" id="optionsRadiosInline1" value="1"
                                            @if(isset($user->husband_wife_id)) checked @endif>
-                                    Vợ/chồng của
-                                </label>
+                                    <label  >Vợ/chồng của</label>
+                                </div>
+
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtparent_id') ? ' has-error' : '' }}">
-                                <select class="form-control" name="txtparent_id"  id="txtparent">
+                                <select class="form-control" disabled name="txtparent_id"  id="txtparent">
                                     <option value= "" selected>-- Chọn người liên quan --</option>
                                     @foreach($listParent as $item)
                                         @if(($item->id != $user->id && $item->parent_id != $user->id && $item->parent_id != null) || ($item->roles_id == 3))
@@ -237,7 +255,7 @@
                                     </san>
                                 @endif
                                     <label for="mother"></label>
-                                    <select class="form-control" name="mother_id" id="motherSelect">
+                                    <select class="form-control" disabled name="mother_id" id="motherSelect">
                                         @if($parent && !isset($user->husband_wife_id))
                                             @foreach($parent as $item)
                                                 @if($item->husband_wife_id && !isset($user->husband_wife_id))
@@ -249,7 +267,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtname') ? ' has-error' : '' }}">
                                 <label class="col-form-lable" for="exampleFormControlInput1">Họ và tên *</label>
-                                <input type="text" class="form-control" name="txtname" id="txtname" value="{{$user->name}}" placeholder=".........">
+                                <input type="text" disabled class="form-control" name="txtname" id="txtname" value="{{$user->name}}" placeholder=".........">
                                 @if ($errors->has('txtname'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtname') }}</strong>
@@ -264,11 +282,11 @@
                                     <img src="/img/avatar.png" width="205" id="txtimage" height="250" class="float-left border" alt="avatar">
                                 @endif
                                 <label class="col-sm-12" for="choose-img"></label>
-                                <input type="file" onchange="showImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img" accept="image/gif, image/jpg, image/png">
+                                <input type="file" disabled onchange="showImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img" accept="image/gif, image/jpg, image/png">
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtbirthday') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Ngày sinh</label>
-                                <input type="date" name="txtbirthday" class="form-control col-sm-6" id="txtbirthday" value="{{$user->birthday}}" placeholder=" ">
+                                <input type="date" disabled name="txtbirthday" class="form-control col-sm-6" id="txtbirthday" value="{{$user->birthday}}" placeholder=" ">
                                 @if ($errors->has('txtbirthday'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtbirthday') }}</strong>
@@ -277,7 +295,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdieldate_at') ? ' has-error' : '' }}">
                                 <label id="dieldate" style="color: #1b4b72; ">Ngày mất <i class="fas fa-hand-point-left"></i></label>
-                                <input type="date" name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" value="{{$user->dieldate_at}}"  placeholder=" ">
+                                <input type="date" disabled name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" value="{{$user->dieldate_at}}"  placeholder=" ">
                                 @if ($errors->has('txtdieldate_at'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtdieldate_at') }}</strong>
@@ -287,11 +305,11 @@
                             <div class="form-group row col-sm-12 {{ $errors->has('txtgender') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1" class="col-sm-3">Giới tính</label>
                                 <div class="custom-control custom-radio col-sm-2">
-                                    <input type="radio" id="customRadio1" name="txtgender" @if($user->gender==1) checked @endif value="1" class="custom-control-input">
+                                    <input type="radio" disabled id="customRadio1" name="txtgender" @if($user->gender==1) checked @endif value="1" class="custom-control-input">
                                     <label class="custom-control-label" for="customRadio1">Nam</label>
                                 </div>
                                 <div class="custom-control custom-radio col-sm-4">
-                                    <input type="radio" id="customRadio2" name="txtgender" @if($user->gender==0) checked @endif value="0" class="custom-control-input">
+                                    <input type="radio" disabled id="customRadio2" name="txtgender" @if($user->gender==0) checked @endif value="0" class="custom-control-input">
                                     <label class="custom-control-label" for="customRadio2">Nữ</label>
                                 </div>
                                 @if ($errors->has('txtgender'))
@@ -302,7 +320,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtaddress') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Địa chỉ</label>
-                                <input type="text" class="form-control" name="txtaddress" value="{{$user->address}}" id="txtaddress" placeholder=" ">
+                                <input type="text" disabled class="form-control" name="txtaddress" value="{{$user->address}}" id="txtaddress" placeholder=" ">
                                 @if ($errors->has('txtaddress'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtaddress') }}</strong>
@@ -311,7 +329,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtphone') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Điện thoại</label>
-                                <input type="number" class="form-control" name="txtphone" value="{{$user->phone}}" id="txtphone" placeholder=" ">
+                                <input type="number" disabled class="form-control" name="txtphone" value="{{$user->phone}}" id="txtphone" placeholder=" ">
                                 @if ($errors->has('txtphone'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtphone') }}</strong>
@@ -329,22 +347,125 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdescription') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlTextarea1">Tiểu sử</label>
-                                <textarea class="form-control" name="txtdescription" id="txtdescription" rows="3">{{$user->description}}</textarea>
+                                <textarea disabled class="form-control" name="txtdescription" id="txtdescription" rows="3">{{$user->description}}</textarea>
                                 @if ($errors->has('txtdescription'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtdescription') }}</strong>
                                     </san>
                                 @endif
                             </div>
-                            <button type="submit" class="btn btn-primary float-right m-2">Lưu sửa đổi</button>
-                            <button type="reset" value="Reset" class="btn btn-primary float-right m-2">Nhập lại</button>
+                            @auth
+                                @if(Auth::user()->id = $user->id || ($user->roles_id = 1))
+                                    <button type="submit"  class="btn btn-primary float-right m-2"><i class="fas fa-save"></i>   Lưu sửa đổi</button>
+                                    <button type="reset"  value="Reset" class="btn btn-primary float-right m-2"><i class="fas fa-researchgate"></i>  Nhập lại</button>
+                                @endif
+                            @endauth
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @foreach($listParent as $user)
-        <input type="hidden" class="form-control" value="{{$user->parent_id}}" id="{{$user->id}}" placeholder="">
+    @foreach($listParent as $item)
+        <input type="hidden" class="form-control" value="{{$item->parent_id}}" id="{{$item->id}}">
     @endforeach
+    <!--Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-user-plus"></i> Khai báo thông tin thành viên trong gia đình!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('post-add-new-member')}}" method="POST" role="form" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        <div class="form-group col-sm-12">
+                            <label for="ddd" class="col-sm-12" style="color: blue;">Chọn thành viên muốn thêm</label>
+                            <div class="row col-sm-10 mx-auto">
+                                <div class="custom-control custom-radio col-sm-4">
+                                    <input type="radio" id="txtchild1" onchange="checkChild(this);" name="txtchild" checked value="1" class="custom-control-input">
+                                    <label class="custom-control-label" for="txtchild1">Thêm con</label>
+                                </div>
+                                <div class="custom-control custom-radio col-sm-6">
+                                    <input type="radio" id="txtchild2" onchange="checkHusbandWife(this);" name="txtchild" value="0" class="custom-control-input">
+                                    <label class="custom-control-label" for="txtchild2">Thêm vợ/chồng</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <input type="text" disabled class="form-control" name="parent_id" id="parent_id" value="{{$user->name}}">
+                        </div>
+                        <div class="form-group wife-show col-sm-12 {{ $errors->has('mother_id') ? ' has-error' : '' }}">
+                            <label class="col-form-lable" for="txtmother">Vợ/chồng </label>
+                            <select class="form-control" name="mother_id" id="txtmother">
+                                @foreach($listParent as $item)
+                                    @if($item->husband_wife_id == $user->id)
+                                        <option value= "{{$item->id}}"  @if(Request::old('mother_id')) selected @endif>- {{$item->name}}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-12 {{ $errors->has('txtname') ? ' has-error' : '' }}">
+                            <label class="col-form-lable add-child" for="exampleFormControlInput1">Họ tên con *</label>
+                            <label class="col-form-lable husband_wife" for="txtmother">Họ tên vợ/chồng </label>
+                            <input type="text" class="form-control" required name="txtname" id="txtname" value="@if(Request::old('txtname')) {{Request::old('txtname') }}@endif" placeholder="">
+                            @if ($errors->has('txtname'))
+                                <san class="help-block">
+                                    <strong>{{ $errors->first('txtname') }}</strong>
+                                </san>
+                            @endif
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <img src="/img/avatar.png" width="150" id="txtimage" height="175" class="float-left border" alt="avatar">
+                            <label class="col-sm-12" for="choose-img"></label>
+                            <input type="file" onchange="showImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img" accept="image/gif, image/jpg, image/png">
+                        </div>
+                        <div class="form-group col-sm-12 {{ $errors->has('txtbirthday') ? ' has-error' : '' }}">
+                            <label for="exampleFormControlInput1">Ngày sinh</label>
+                            <input type="date" name="txtbirthday" class="form-control col-sm-6" id="txtbirthday" placeholder=" ">
+                            @if ($errors->has('txtbirthday'))
+                                <san class="help-block">
+                                    <strong>{{ $errors->first('txtbirthday') }}</strong>
+                                </san>
+                            @endif
+                        </div>
+                        <div class="form-group row col-sm-12 {{ $errors->has('add-gender') ? ' has-error' : '' }}">
+                            <label for="ffff" class="col-sm-3">Giới tính</label>
+                            <div class="custom-control custom-radio col-sm-2">
+                                <input type="radio" id="customRadio3" name="add-gender" checked value="1" class="custom-control-input">
+                                <label class="custom-control-label" for="customRadio3">Nam</label>
+                            </div>
+                            <div class="custom-control custom-radio col-sm-4">
+                                <input type="radio" id="customRadio4" name="add-gender" value="0" class="custom-control-input">
+                                <label class="custom-control-label" for="customRadio4">Nữ</label>
+                            </div>
+                            @if ($errors->has('add-gender'))
+                                <san class="help-block">
+                                    <strong>{{ $errors->first('add-gender') }}</strong>
+                                </san>
+                            @endif
+                        </div>
+                        <div class="form-group col-sm-12 {{ $errors->has('txtdescription') ? ' has-error' : '' }}">
+                            <label for="exampleFormControlTextarea1">Tiểu sử</label>
+                            <textarea class="form-control" name="txtdescription" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            @if ($errors->has('txtdescription'))
+                                <san class="help-block">
+                                    <strong>{{ $errors->first('txtdescription') }}</strong>
+                                </san>
+                            @endif
+                        </div>
+                        <input type="hidden" class="form-control" name="txtaddress" id="exampleFormControlInput1" value="{{$user->address}}">
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary"><i class=""></i>Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Modal-->
 @endsection

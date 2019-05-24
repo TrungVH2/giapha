@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Gia phả võ huy</title>
+    <title>Gia phả võ huy tộc</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -56,7 +56,7 @@
                     </ul>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <img src="../img/icon-noterbook.png" height="40">
+                            <img src="/img/icon-noterbook.png" height="40">
                         </li>
                     </ul>
                     <!-- Right Side Of Navbar -->
