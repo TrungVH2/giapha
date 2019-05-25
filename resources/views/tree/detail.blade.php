@@ -211,7 +211,7 @@
                     </div>
                     <div  class="col-sm-12 float-right pb-2">
                         @auth()
-                            @if(Auth::user()->id = $user->id || ($user->roles_id = 1) || (Auth::user()->id = $user->parent_id))
+                            @if(Auth::user()->id == $user->id || (Auth::user()->parent_id == $user->id) || (Auth::user()->roles_id == 1) || (Auth::user()->id == $user->parent_id))
                                 <button type="button" class="addChild btn btn-primary m-md-2 float-right" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-user-plus"></i>  Thêm thành viên mới</button>
                             @endif
                         @endauth
@@ -369,7 +369,7 @@
                                 @endif
                             </div>
                             @auth
-                                @if(Auth::user()->id = $user->id || ($user->roles_id = 1))
+                                @if(Auth::user()->id == $user->id || (Auth::user()->parent_id == $user->id) || (Auth::user()->roles_id == 1) || (Auth::user()->id == $user->parent_id))
                                     <button type="submit"  class="btn btn-primary float-right m-2"><i class="fas fa-save"></i>   Lưu sửa đổi</button>
                                     <button type="reset"  value="Reset" class="btn btn-primary float-right m-2"><i class="fas fa-researchgate"></i>  Nhập lại</button>
                                 @endif
