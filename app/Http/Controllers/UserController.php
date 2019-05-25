@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateMemberByUserRequest;
 use App\Http\Requests\CreateMemberRequest;
 use App\Http\Requests\EditMemberRequest;
 use App\User;
@@ -97,6 +98,97 @@ class UserController extends Controller
         }
         return $result;
     }
+
+    /**
+     * userself add child or wife and husband
+     * @param CreateMemberByUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postUserSelfAddNewMember(CreateMemberByUserRequest $request)
+    {
+        $isChild = $request->get('txtchild');
+
+        $parent = $request->get('parent_id');
+        $parentId = $isChild == 1? $parent  : null;
+        $motherId = $isChild == 1? $request->get('mother_id'): null;
+        $husbandWifeId = $isChild == 0? $parent : null;
+
+        $name = $request->get('txtname');
+        $strName = $this->convertVNToEN($name);
+        $username = str_replace(' ', '', $strName);
+        $shortName = null;
+        $gender = $request->get('add-gender');
+        $birthday = $request->get('txtbirthday');
+        $diedateAt = null;
+        $address = $request->get('txtaddress');
+        $phone = null;
+        $email = null;
+        $description = $request->get('txtdescription');
+        $sortInFamily = '1';
+        $branchId = null;
+        $layerId = null;
+        if (!$email) {
+            for ($i = 1; $i <= 500; $i++) {
+                $setEmail = strtolower($username) . (string)$i . '@gmail.com';
+                if (!$this->checkExitsEmail($setEmail)) {
+                    $email = $setEmail;
+                    break;
+                }
+            }
+        }
+
+        $avatar = null;
+        $filename = null;
+        if ($request->hasFile('fileAvatar')) {
+            //get img and save to local
+            //$filename = $request->get('txtFile');
+            $avatar = $request->file('fileAvatar')->getClientOriginalName();
+            $filename = time() . '_' . $avatar;
+            $destination = base_path() . '/public/uploads';
+            $request->file('fileAvatar')->move($destination, $filename);
+        }
+
+        if (!$avatar && ($gender == 1)) {
+            $filename = 'man.png';
+        }
+
+        if (!$avatar && ($gender == 0)) {
+            $filename = 'girl.png';
+        }
+        $data = [
+            'username' => $username,
+            'password' => Hash::make('0974839268'),
+            'name' => $name,
+            'short_name' => $shortName,
+            'avatar' => $filename,
+            'gender' => $gender,
+            'birthday' => $birthday,
+            'diedate_at' => $diedateAt,
+            'address' => $address,
+            'phone' => $phone,
+            'email' => $email,
+            'description' => $description,
+            'sort_in_family' => $sortInFamily,
+            'parent_id' => $parentId,
+            'mother_id' => $motherId,
+            'husband_wife_id' => $husbandWifeId,
+            'branch_id' => $branchId,
+            'layer_id' => $layerId,
+            'roles_id' => '2',
+            'user_id_add' => Auth::user()->id,
+        ];
+        if ($this->create($data)) {
+            return redirect()->back()->with(['successful' => 'Thêm thành viên mới vào gia đình thành công!']);
+        }
+
+        return redirect()->back()->withErrors(['error' => 'Thêm thành viên thất bại!']);
+    }
+
+    /**
+     * Admin add new
+     * @param CreateMemberRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
 
     public function postNewMember(CreateMemberRequest $request)
     {

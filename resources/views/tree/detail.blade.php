@@ -3,6 +3,7 @@
 @section('tree')
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
     <script>
+
         function showImage(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -13,6 +14,20 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        //Choose img for child
+        function showChildImage(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#txtimageChild')
+                        .attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         function checkControllParent(input) {
             $('#motherSelect').show();
         }
@@ -145,10 +160,7 @@
             <div class="col-xl-6" style="margin-bottom: 5px">
                 <div class="card spur-card">
                     <div class="card-header">
-                        <div class="spur-card-icon">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <div class="spur-card-title"> Gia đình 3 thế hệ của : <label style="color: blue;">{{$user->name}}</label></div>
+                        <div class="spur-card-title"><i class="fas fa-user-shield"></i>   Gia đình 3 thế hệ của : <label style="color: blue;">{{$user->name}}</label></div>
                     </div>
                     <div class="card-body ">
                         <div class="form-row col-sm-12">
@@ -198,9 +210,11 @@
                         </div>
                     </div>
                     <div  class="col-sm-12 float-right pb-2">
-                        @if(Auth::user()->id = $user->id || ($user->roles_id = 1) || (Auth::user()->id = $user->parent_id))
-                            <button type="button" class="addChild btn btn-primary m-md-2 float-right" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-user-plus"></i>  Thêm thành viên mới</button>
-                        @endif
+                        @auth()
+                            @if(Auth::user()->id = $user->id || ($user->roles_id = 1) || (Auth::user()->id = $user->parent_id))
+                                <button type="button" class="addChild btn btn-primary m-md-2 float-right" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fas fa-user-plus"></i>  Thêm thành viên mới</button>
+                            @endif
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -229,19 +243,19 @@
                             <label style="color: blue;">Bạn là ai?</label>
                             <div class="form-group row radio-inline col-sm-12">
                                 <div class="col-sm-6">
-                                    <input type="radio" disabled name="optionsRadiosIsParent" onchange="checkControllParent(this)" id="optionsRadiosInline2" value="0"
+                                    <input type="radio" @guest disabled @endguest name="optionsRadiosIsParent" onchange="checkControllParent(this)" id="optionsRadiosInline2" value="0"
                                            @if(isset($user->parent_id)|| (!isset($user->parent_id) && !isset($user->husband_wife_id))) checked @endif>
                                     <label >Con của cha/mẹ (Bố/Mẹ)</label>
                                 </div>
                                 <div class="col-sm-6 p-lg-0">
-                                    <input type="radio" disabled name="optionsRadiosIsParent" onchange="checkControllWife(this)" id="optionsRadiosInline1" value="1"
+                                    <input type="radio" @guest disabled @endguest name="optionsRadiosIsParent" onchange="checkControllWife(this)" id="optionsRadiosInline1" value="1"
                                            @if(isset($user->husband_wife_id)) checked @endif>
                                     <label  >Vợ/chồng của</label>
                                 </div>
 
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtparent_id') ? ' has-error' : '' }}">
-                                <select class="form-control" disabled name="txtparent_id"  id="txtparent">
+                                <select class="form-control" @guest disabled @endguest name="txtparent_id"  id="txtparent">
                                     <option value= "" selected>-- Chọn người liên quan --</option>
                                     @foreach($listParent as $item)
                                         @if(($item->id != $user->id && $item->parent_id != $user->id && $item->parent_id != null) || ($item->roles_id == 3))
@@ -255,7 +269,7 @@
                                     </san>
                                 @endif
                                     <label for="mother"></label>
-                                    <select class="form-control" disabled name="mother_id" id="motherSelect">
+                                    <select class="form-control" @guest disabled @endguest name="mother_id" id="motherSelect">
                                         @if($parent && !isset($user->husband_wife_id))
                                             @foreach($parent as $item)
                                                 @if($item->husband_wife_id && !isset($user->husband_wife_id))
@@ -267,7 +281,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtname') ? ' has-error' : '' }}">
                                 <label class="col-form-lable" for="exampleFormControlInput1">Họ và tên *</label>
-                                <input type="text" disabled class="form-control" name="txtname" id="txtname" value="{{$user->name}}" placeholder=".........">
+                                <input type="text" @guest disabled @endguest class="form-control" name="txtname" id="txtname" value="{{$user->name}}" placeholder=".........">
                                 @if ($errors->has('txtname'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtname') }}</strong>
@@ -282,11 +296,11 @@
                                     <img src="/img/avatar.png" width="205" id="txtimage" height="250" class="float-left border" alt="avatar">
                                 @endif
                                 <label class="col-sm-12" for="choose-img"></label>
-                                <input type="file" disabled onchange="showImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img" accept="image/gif, image/jpg, image/png">
+                                <input type="file" @guest disabled @endguest onchange="showImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img" accept="image/gif, image/jpg, image/png">
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtbirthday') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Ngày sinh</label>
-                                <input type="date" disabled name="txtbirthday" class="form-control col-sm-6" id="txtbirthday" value="{{$user->birthday}}" placeholder=" ">
+                                <input type="date" @guest disabled @endguest name="txtbirthday" class="form-control col-sm-6" id="txtbirthday" value="{{$user->birthday}}" placeholder=" ">
                                 @if ($errors->has('txtbirthday'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtbirthday') }}</strong>
@@ -295,7 +309,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdieldate_at') ? ' has-error' : '' }}">
                                 <label id="dieldate" style="color: #1b4b72; ">Ngày mất <i class="fas fa-hand-point-left"></i></label>
-                                <input type="date" disabled name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" value="{{$user->dieldate_at}}"  placeholder=" ">
+                                <input type="date" @guest disabled @endguest name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" value="{{$user->dieldate_at}}"  placeholder=" ">
                                 @if ($errors->has('txtdieldate_at'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtdieldate_at') }}</strong>
@@ -305,11 +319,11 @@
                             <div class="form-group row col-sm-12 {{ $errors->has('txtgender') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1" class="col-sm-3">Giới tính</label>
                                 <div class="custom-control custom-radio col-sm-2">
-                                    <input type="radio" disabled id="customRadio1" name="txtgender" @if($user->gender==1) checked @endif value="1" class="custom-control-input">
+                                    <input type="radio" @guest disabled @endguest id="customRadio1" name="txtgender" @if($user->gender==1) checked @endif value="1" class="custom-control-input">
                                     <label class="custom-control-label" for="customRadio1">Nam</label>
                                 </div>
                                 <div class="custom-control custom-radio col-sm-4">
-                                    <input type="radio" disabled id="customRadio2" name="txtgender" @if($user->gender==0) checked @endif value="0" class="custom-control-input">
+                                    <input type="radio" @guest disabled @endguest id="customRadio2" name="txtgender" @if($user->gender==0) checked @endif value="0" class="custom-control-input">
                                     <label class="custom-control-label" for="customRadio2">Nữ</label>
                                 </div>
                                 @if ($errors->has('txtgender'))
@@ -320,7 +334,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtaddress') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Địa chỉ</label>
-                                <input type="text" disabled class="form-control" name="txtaddress" value="{{$user->address}}" id="txtaddress" placeholder=" ">
+                                <input type="text" @guest disabled @endguest class="form-control" name="txtaddress" value="{{$user->address}}" id="txtaddress" placeholder=" ">
                                 @if ($errors->has('txtaddress'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtaddress') }}</strong>
@@ -329,7 +343,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtphone') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Điện thoại</label>
-                                <input type="number" disabled class="form-control" name="txtphone" value="{{$user->phone}}" id="txtphone" placeholder=" ">
+                                <input type="number" @guest disabled @endguest class="form-control" name="txtphone" value="{{$user->phone}}" id="txtphone" placeholder=" ">
                                 @if ($errors->has('txtphone'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtphone') }}</strong>
@@ -338,7 +352,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtemail') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlInput1">Email</label>
-                                <input type="email" disabled class="form-control" name="email" value="{{$user->email}}" id="email" placeholder="vohuy...@gmail.com">
+                                <input type="email" @guest disabled @endguest class="form-control" name="email" value="{{$user->email}}" id="email" placeholder="vohuy...@gmail.com">
                                 @if ($errors->has('txtemail'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtemail') }}</strong>
@@ -347,7 +361,7 @@
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdescription') ? ' has-error' : '' }}">
                                 <label for="exampleFormControlTextarea1">Tiểu sử</label>
-                                <textarea disabled class="form-control" name="txtdescription" id="txtdescription" rows="3">{{$user->description}}</textarea>
+                                <textarea @guest disabled @endguest class="form-control" name="txtdescription" id="txtdescription" rows="3">{{$user->description}}</textarea>
                                 @if ($errors->has('txtdescription'))
                                     <san class="help-block">
                                         <strong>{{ $errors->first('txtdescription') }}</strong>
@@ -380,7 +394,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('post-add-new-member')}}" method="POST" role="form" enctype="multipart/form-data">
+                    <form action="{{route('add-child-wife-husband')}}" method="POST" role="form" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="form-group col-sm-12">
                             <label for="ddd" class="col-sm-12" style="color: blue;">Chọn thành viên muốn thêm</label>
@@ -396,7 +410,8 @@
                             </div>
                         </div>
                         <div class="form-group col-sm-12">
-                            <input type="text" disabled class="form-control" name="parent_id" id="parent_id" value="{{$user->name}}">
+                            <input type="text" disabled class="form-control" name="parent_name" id="parent_id" value="{{$user->name}}">
+                            <input type="hidden" class="form-control" name="parent_id" id="parent_id" value="{{$user->id}}">
                         </div>
                         <div class="form-group wife-show col-sm-12 {{ $errors->has('mother_id') ? ' has-error' : '' }}">
                             <label class="col-form-lable" for="txtmother">Vợ/chồng </label>
@@ -419,9 +434,9 @@
                             @endif
                         </div>
                         <div class="form-group col-sm-6">
-                            <img src="/img/avatar.png" width="150" id="txtimage" height="175" class="float-left border" alt="avatar">
+                            <img src="/img/avatar.png" width="150" id="txtimageChild" height="175" class="float-left border" alt="avatar">
                             <label class="col-sm-12" for="choose-img"></label>
-                            <input type="file" onchange="showImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img" accept="image/gif, image/jpg, image/png">
+                            <input type="file" onchange="showChildImage(this)" name="fileAvatar" class="form-control-file magin-top" id="choose-img-child" accept="image/gif, image/jpg, image/png">
                         </div>
                         <div class="form-group col-sm-12 {{ $errors->has('txtbirthday') ? ' has-error' : '' }}">
                             <label for="exampleFormControlInput1">Ngày sinh</label>

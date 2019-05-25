@@ -79,8 +79,8 @@
 @endsection
 @section('content')
     <div class="zoom-tree">
-        <a class="zoom-remove" onclick="removeZoomClass();"><i class="fa fa-search-minus"></i></a>
-        <a class="zoom-add" onclick="addZoomClass();"><i class="fa fa-search-plus"></i></a>
+        <a class="zoom-remove" onclick="addZoomClass();"><i class="fa fa-search-minus"></i></a>
+        <a class="zoom-add" onclick="removeZoomClass();"><i class="fa fa-search-plus"></i></a>
     </div>
         <div class="tree text-center">
             <ul>

@@ -19,6 +19,8 @@ Route::get('/tree/{userId?}/view-detail', 'HomeController@getDetailUser')->name(
 Route::get('/event', 'EventController@index')->name('event');
 Route::get('/introduction', 'NewsController@introduction')->name('introduction');
 Route::get('/rule', 'NewsController@rule')->name('rule');
+Route::post('/add-child-wife-husband', 'UserController@postUserSelfAddNewMember')->name('add-child-wife-husband');
+
 
 Route::get('/Admin', 'AdminController@index')->name('admin');
 Route::get('/Admin/list-members', 'UserController@listMembers')->name('list-members');
@@ -27,4 +29,4 @@ Route::post('/Admin/add-new-member', 'UserController@postNewMember')->name('post
 Route::post('/Admin/get-wife-husband', 'UserController@getWifeHusband')->name('get-wife-husband');
 Route::get('/Admin/{userId?}/edit-member', 'UserController@getEditUser')->name('edit-member');
 Route::post('/Admin/save-edit-member', 'UserController@postEditUser')->name('save-edit-member');
-Route::post('/Admin/{id}/delete', 'UserController@delete')->name('delete');
+Route::get('/Admin/{id}/delete', 'UserController@delete')->name('delete');
