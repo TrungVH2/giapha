@@ -39,6 +39,7 @@ class User extends Authenticatable
         'description',
         'sort_in_family',
         'parent_id',
+        'mother_id',
         'husband_wife_id',
         'branch_id',
         'layer_id',
@@ -89,6 +90,35 @@ class User extends Authenticatable
      */
     public function getChildrenByUserId($userId)
     {
-        return User::Where('parent_id',$userId)->get();
+        return User::Where('parent_id',$userId)->Orderby('sort_in_family', 'ASC')->get();
     }
+
+    /**
+     * Get all children of user id
+     * @param $userId
+     * @return mixed
+     */
+    public function getFamilyByUserId($userId)
+    {
+        $user = User::find($userId);
+        return User::Where('id',$userId)
+                    ->OrWhere('husband_wife_id', '=', $userId)
+                    ->OrWhere('id','=',$user->parent_id)
+                    ->OrWhere('husband_wife_id', '=', $user->parent_id)
+                    ->OrWhere('parent_id', '=', $userId)
+                    ->Orderby('sort_in_family', 'DESC')->get();
+    }
+
+    /**Start show tree **/
+
+    /**
+     * get ông tổ của cả họ.
+     */
+    public function getMembersIndex()
+    {
+        return User::where('roles_id',3)->first();
+    }
+
+    /**End show tree **/
+
 }

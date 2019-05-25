@@ -1,5 +1,6 @@
 @extends('layouts.admin_app')
 @section('js_common')
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
     <script>
         function showImage(input) {
             if (input.files && input.files[0]) {
@@ -16,27 +17,111 @@
         }
 
         function checkControllWife(input) {
-            $('#motherSelect').hide();
+            $("#motherSelect").html('');
+            $("#motherSelect").hide();
         }
-        function getWifeOrHusband(user)
-        {
-            var userId = user.selectedIndex;
-            if(userId != null && userId != ''){
-                $.ajax(
-                    {
-                        url: '?userId=' + userId,
-                        type: 'Get',
-                        dataType: 'html'
-                    }
-                ).done(function (data) {
-                        alert(data);
-                    }
-                ).fail(function (jqXHR, ajaxOptions, thrownError) {
-                        alert('Xảy ra lỗi');
-                    }
-                )
+
+        $(document).ready(function(){
+
+            if($("#optionsRadiosInline1").is(":checked"))
+            {
+                $("#motherSelect").html('');
+                $("#motherSelect").hide();
             }
-        }
+
+            if($("#txtdieldate").val() =='')
+            {
+                $("#txtdieldate").css("display", "none")
+            }
+
+            $("#dieldate").click(function(){
+                $("#txtdieldate").toggle();
+            });
+
+            $("#txtparent").change(function(e) {
+                var userId = this.value;
+                var parentId = $("#"+this.value).val();
+                if(userId != null && userId != ''){
+                    $.ajax({
+                        headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') },
+                        url: "{{ route('get-wife-husband') }}",
+                        method: 'POST',
+                        data : {userId:userId, _token: "{{ csrf_token() }}"},
+                        dataType: 'html',
+                        success: function(data){
+                            if(data)
+                            {  $_data = $.parseJSON(data);
+                                $options ='';
+                                $.each( $_data['wifeHusband'], function( key, value ) {
+                                    $options +=  ' <option selected value="'+value['id']+'"> - '+ value['name'] +'</option>';
+                                });
+                                if($options!= ''){
+                                    $("#motherSelect").html($options);
+                                    $("#motherSelect").show();
+                                }else{
+                                    $("#motherSelect").html('');
+                                    $("#motherSelect").hide();
+                                }
+
+                                //Set data family when choose people relationship
+                                $grandparent = '';
+                                $isparent = '';
+                                $ischild = '';
+                                $.each($_data['familyUser'], function( key, value ){
+                                    $item = ' '
+                                        +'<div class="float-left mx-2">'
+                                        +'<img src="/uploads/'+value['avatar']+'" title="'+value['name']+'" width="100"  id="txtimagefather" height="125" class="border" alt="'+value['name']+'"><br/>'
+                                        +'<label for="name" >'+value['name']+'</label>'
+                                        +'</div>';
+                                    if(value['id'] == parentId || value['husband_wife_id'] == parentId)
+                                    {
+                                        $grandparent += $item;
+                                    }
+
+                                    if(value['id'] == userId || value['husband_wife_id'] == userId)
+                                    {
+                                        $isparent +=$item;
+                                    }
+
+                                    if(value['parent_id'] == userId)
+                                    {
+                                        $ischild +=$item;
+                                    }
+                                });
+                                if($grandparent!= ''){
+                                    $(".grandparent").html($grandparent);
+                                }else{
+                                    $(".grandparent").html('');
+                                }
+
+                                if($isparent!= ''){
+                                    $(".is-parent").html($isparent);
+                                }else{
+                                    $(".is-parent").html('');
+                                }
+
+                                if($ischild!= ''){
+                                    $(".is-child").html($ischild);
+                                }else{
+                                    $(".is-child").html('');
+                                }
+
+                            }else{
+                                $("#motherSelect").html('');
+                                $("#motherSelect").hide();
+                            }
+                        },
+                        error: function(error){
+                            console.log(error)
+                        }
+                    });
+                }
+                else {
+                    $("#motherSelect").html('');
+                    $("#motherSelect").hide();
+                }
+            });
+        });
     </script>
 @endsection
 @section('content')
@@ -72,18 +157,19 @@
                                 <br>
                                 <label class="radio-inline">
                                     <input type="radio" name="optionsRadiosIsParent" onchange="checkControllParent(this)" id="optionsRadiosInline2" value="0"
-                                           @if($user->parent_id || (!$user->parent_id && !$user->husband_wife_id)) checked @endif>
+                                           @if(isset($user->parent_id)|| (!isset($user->parent_id) && !isset($user->husband_wife_id))) checked @endif>
                                     Con của cha/mẹ (Bố/Mẹ)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="optionsRadiosIsParent" onchange="checkControllWife(this)" id="optionsRadiosInline1" value="1" @if($user->husband_wife_id) checked @endif>
+                                    <input type="radio" name="optionsRadiosIsParent" onchange="checkControllWife(this)" id="optionsRadiosInline1" value="1"
+                                           @if(isset($user->husband_wife_id)) checked @endif>
                                     Vợ/chồng của
                                 </label>
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtparent_id') ? ' has-error' : '' }}">
-                                <select class="form-control" name="txtparent_id" onchange="getWifeOrHusband(this)" id="txtparent">
+                                <select class="form-control" name="txtparent_id"  id="txtparent">
                                     <option value= "" selected>-- Chọn người liên quan --</option>
                                     @foreach($listParent as $item)
-                                        @if($item->id != $user->id)
-                                        <option value= "{{$item->id}}"  @if(Request::old('txtparent_id') == $item->id) selected  @elseif(($item->id == $user->parent_id) || ($item->id == $user->husband_wife_id) ) selected @endif>- {{$item->name}}</option>
+                                        @if(($item->id != $user->id && $item->parent_id != $user->id && $item->parent_id != null) || ($item->roles_id == 3))
+                                            <option value= "{{$item->id}}"  @if(Request::old('txtparent_id') == $item->id) selected  @elseif(($item->id == $user->parent_id) || ($item->id == $user->husband_wife_id) ) selected @endif>- {{$item->name}}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -93,16 +179,15 @@
                                     </san>
                                 @endif
                                     <label for="mother"></label>
-                                    <select class="form-control" name="txtmother_id" id="motherSelect">
-                                        @if($parent)
+                                    <select class="form-control" name="mother_id" id="motherSelect">
+                                        @if($parent && !isset($user->husband_wife_id))
                                             @foreach($parent as $item)
-                                                @if($item->husband_wife_id)
-                                                <option value= "{{$item->id}}"  @if(Request::old('txtmother_id') == $item->id) selected @endif>- {{$item->name}}</option>
+                                                @if($item->husband_wife_id && !isset($user->husband_wife_id))
+                                                    <option value= "{{$item->id}}"  @if(Request::old('mother_id') == $item->id) selected @endif>- {{$item->name}}</option>
                                                 @endif
                                             @endforeach
                                         @endif
                                     </select>
-
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtname') ? ' has-error' : '' }}">
                                 <label class="col-form-lable" for="exampleFormControlInput1">Họ và tên *</label>
@@ -133,7 +218,7 @@
                                 @endif
                             </div>
                             <div class="form-group col-sm-12 {{ $errors->has('txtdieldate_at') ? ' has-error' : '' }}">
-                                <label for="exampleFormControlInput1">Ngày mất</label>
+                                <label id="dieldate" style="color: #1b4b72; ">Ngày mất <i class="fas fa-hand-point-left"></i></label>
                                 <input type="date" name="txtdieldate_at" class="form-control col-sm-6" id="txtdieldate" value="{{$user->dieldate_at}}"  placeholder=" ">
                                 @if ($errors->has('txtdieldate_at'))
                                     <san class="help-block">
@@ -208,43 +293,57 @@
                         <div class="spur-card-title"> Gia đình 3 thế hệ của : <label style="color: blue;">{{$user->name}}</label></div>
                     </div>
                     <div class="card-body ">
-                        <div class="form-group col-sm-12 text-center">
-                            @if($parent)
-                                <label for="granderFather" class="float-left">Bố mẹ:</label>
-                                @foreach($parent as $item)
-                                        <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}" width="100" id="txtimagefather" height="125" class="border" alt="{{$item->name}}">
-                                @endforeach
-                            @endif
+                        <div class="form-row col-sm-12">
+                            <label for="granderFather" class="float-left">Bố mẹ:</label>
+                            <div class="form-group mx-auto grandparent text-center">
+                                @if($parent)
+                                    @foreach($parent as $item)
+                                        <div class="float-left mx-2">
+                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}" width="100" id="txtimagefather" height="125" class="border" alt="{{$item->name}}"><br/>
+                                            <label for="txtimagefather" >{{$item->name}}</label>
+                                        </div>
+                                        @endforeach
+                                    @endif
+                            </div>
                         </div>
 
-                        <div class="form-group col-sm-12 text-center">
-                            @if($parent)
-                                @foreach($parent as $item)
-                                    <label for="granderFather"  style="border: 1px solid red;">{{$item->name}}</label>
-                                @endforeach
-                            @endif
-                        </div>
-
-                        <div class="form-group col-sm-12 text-center">
+                        <div class="form-row col-sm-12">
                             <label for="father" class="float-left">Tôi:</label>
-                            <img src="/uploads/{{$user->avatar?$user->avatar:'avatar.png'}}" title="{{$user->name}}"  width="100" id="txtimageuser" height="125" class="border" alt="{{$user->name}}">
-                            @foreach($listParent as $item)
-                                @if($item->husband_wife_id == $user->id || $item->id == $user->husband_wife_id)
-                                    <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}"  width="100" id="txtimagewife" height="125" class="border" alt="{{$item->name}}">
-                                @endif
-                            @endforeach
-                        </div>
-                        <div class="form-group col-sm-12 text-center">
-                            @if(count($children) > 0)
-                                <label for="children" class="float-left">Các con:</label>
-                                @foreach($children as $item)
-                                    <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" width="100" title="{{$item->name}}"  id="txtimagechildren" height="125" class="border" alt="{{$item->name}}">
+                            <div class="form-group mx-auto is-parent text-center">
+                                <div class="float-left mx-2">
+                                    <img src="/uploads/{{$user->avatar?$user->avatar:'avatar.png'}}" title="{{$user->name}}"  width="100" id="txtimageuser" height="125" class="border" alt="{{$user->name}}"><br/>
+                                    <label for="xxx" >{{$user->name}}</label>
+                                </div>
+                                @foreach($listParent as $item)
+                                    @if($item->husband_wife_id == $user->id || $item->id == $user->husband_wife_id)
+                                        <div class="float-left mx-2">
+                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" title="{{$item->name}}"  width="100" id="txtimagewife" height="125" class="border" alt="{{$item->name}}"><br/>
+                                            <label for="ccc" >{{$item->name}}</label>
+                                        </div>
+                                    @endif
                                 @endforeach
-                            @endif
+                            </div>
+                        </div>
+
+                        <div class="form-row col-sm-12">
+                            <label for="children" class="float-left">Các con:</label>
+                            <div class="form-group mx-auto is-child text-center">
+                                @if(count($children) > 0)
+                                    @foreach($children as $item)
+                                        <div class="float-left mx-2">
+                                            <img src="/uploads/{{$item->avatar?$item->avatar:'avatar.png'}}" width="100" title="{{$item->name}}"  id="txtimagechildren" height="125" class="border" alt="{{$item->name}}"><br/>
+                                            <label for="cccai" >{{$item->name}}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @foreach($listParent as $user)
+        <input type="hidden" class="form-control" value="{{$user->parent_id}}" id="{{$user->id}}" placeholder="">
+    @endforeach
 @endsection
