@@ -32,6 +32,24 @@ class UserController extends Controller
         return view('home');
     }
 
+    public function  setChi(){
+        $user = User::all();
+        while (User::Where('branch_id','!=','null')->get()->count()>1){
+            foreach ($user as $item){
+                if($item->parent_id){
+                    $father = User::find($item->parent_id);
+                    if($father->branch_id){
+                        $item->branch_id = $father->branch_id;
+                        //dd($item->name . " - ".$item->branch_id);
+
+                        $item->save();
+                    }
+                }
+            }
+        }
+
+    }
+
     public function listMembers()
     {
         $listUser = User::all();
@@ -124,7 +142,7 @@ class UserController extends Controller
         $phone = null;
         $email = null;
         $description = $request->get('txtdescription');
-        $sortInFamily = '1';
+        $sortInFamily = $request->get('sort_in_family');
         $branchId = null;
         $layerId = null;
         if (!$email) {
@@ -144,7 +162,8 @@ class UserController extends Controller
             //$filename = $request->get('txtFile');
             $avatar = $request->file('fileAvatar')->getClientOriginalName();
             $filename = time() . '_' . $avatar;
-            $destination = base_path() . '/public/uploads';
+            //$destination = base_path() . '/public/uploads';
+            $destination =public_path('/uploads');
             $request->file('fileAvatar')->move($destination, $filename);
         }
 
@@ -321,6 +340,7 @@ class UserController extends Controller
 
     public function postEditUser(EditMemberRequest $request)
     {
+        $modUser= $request->get('mod-user');
         $userId = $request->get('txtuserid');
         $isParent = $request->get('optionsRadiosIsParent');
         $parent = $request->get('txtparent_id');
@@ -338,7 +358,7 @@ class UserController extends Controller
         $phone = $request->get('txtphone');
         $email = $request->get('email');
         $description = $request->get('txtdescription');
-        $sortInFamily = '1';
+        //$sortInFamily = '1';
         $branchId = null;
         $layerId = null;
 
@@ -350,6 +370,7 @@ class UserController extends Controller
             $avatar = $request->file('fileAvatar')->getClientOriginalName();
             $filename = time() . '_' . $avatar;
             $destination = base_path() . '/public/uploads';
+            dd($destination);
             $request->file('fileAvatar')->move($destination, $filename);
         }
 
@@ -375,7 +396,7 @@ class UserController extends Controller
             'phone' => $phone,
             //'email' => $email,
             'description' => $description,
-            'sort_in_family' => $sortInFamily,
+            //'sort_in_family' => $sortInFamily,
             'parent_id' => $parentId,
             'mother_id' => $motherId,
             'husband_wife_id' => $husbandWifeId,
@@ -397,7 +418,7 @@ class UserController extends Controller
             $user->phone = $data['phone'];
             //$user->email = $data['email'];
             $user->description = $data['description'];
-            $user->sort_in_family = $data['sort_in_family'];
+            $user->sort_in_family = $user->sort_in_family;
             $user->parent_id = $data['parent_id'];
             $user->mother_id = $data['mother_id'];
             $user->husband_wife_id = $data['husband_wife_id'];
@@ -405,13 +426,31 @@ class UserController extends Controller
             $user->layer_id = $data['layer_id'];
             $user->user_id_add = $data['user_id_add'];
             if ($user->save()) {
-                return redirect()->route('list-members');
+                if($modUser !='ModUser'){
+                    return redirect()->route('list-members');
+                }else{
+                    return redirect()->back()->with(['successful' => 'Cập nhật thành công!']);
+                }
             }
             return redirect()->back()->withErrors(['error' => 'Chỉnh sửa thông tin thất bại!']);
         } else {
             return redirect()->back()->withErrors(['error' => 'Thành viên này không tồn tại trong hệ thống!']);
         }
 
+    }
+
+    public function updateSortInFamily(Request $request){
+        $userId = $request->get('userId');
+        $sortNumber = $request->get('sortNumber');
+
+        if($userId){
+            $user = User::find($userId);
+            $user->sort_in_family = $sortNumber;
+            if($user->save()){
+                return redirect()->back()->with(['successful' => 'Cập thứ tự thành công!']);
+            }
+        }
+        return redirect()->back()->with(['successful' => 'Xảy ra lỗi cập nhật!']);
     }
 
     /**

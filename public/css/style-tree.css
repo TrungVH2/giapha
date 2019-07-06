@@ -95,7 +95,7 @@ right connector from last child*/
 .tree li a div{
     float: left;
     width: max-content;
-    margin:5px 0px 5px 5px;
+    margin:5px 0px 5px 0px;
 }
 
 .tree li a div:first-child{
@@ -117,4 +117,12 @@ right connector from last child*/
 .tree li a:hover+ul::before,
 .tree li a:hover+ul ul::before{
     border-color: #94a0b4;
+}
+.tree li a div p{
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.tree ul {
+    padding-left: 0px !important;
 }

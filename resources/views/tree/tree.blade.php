@@ -10,8 +10,8 @@
             float: left;
             margin-top: 50px;
             margin-left: 30px;
-            width: 100px;
-            height: 25px;
+            width: 150px;
+            height: 50px;
             border: 2px solid #ccc;
             border-radius: 2px 2px 2px 2px;
             background-color: #fff3cd;
@@ -22,18 +22,24 @@
         .zoom-add{
             float: left;
             width: 50%;
+            border-bottom: 2px solid #ccc;
         }
         .zoom-remove{
             float: left;
             width: 50%;
+            border-bottom: 2px solid #ccc;
         }
         .zoom-add:hover{
             background-color: #ccc;
         }
-        .zoom-remove:hover{
+        .zoom-remove:hover, .tree-view:hover{
             background-color: #ccc;
         }
+        .tree-view{
+            float: left;
+            width: 33%;
 
+        }
         .zoom-25
         {
             zoom: 25%;
@@ -75,19 +81,38 @@
         function addZoomClass() {
            $(".tree").addClass('zoom-50');
         }
+
+        function hiddenImg(){
+           $(".img-user").hide();
+        }
+
+        function hiddenWifeOrHusband() {
+            $(".show-wife-husband").hide();
+        }
+
+        function showall() {
+            $(".img-user").show();
+            $(".show-wife-husband").show();
+        }
     </script>
 @endsection
 @section('content')
     <div class="zoom-tree">
         <a class="zoom-remove" onclick="addZoomClass();"><i class="fa fa-search-minus"></i></a>
         <a class="zoom-add" onclick="removeZoomClass();"><i class="fa fa-search-plus"></i></a>
+        <a class="tree-view" onclick="showall();"><i class="fa fa-reply-all"></i></a>
+        <a class="tree-view" onclick="hiddenImg();"><i class="fa fa-image"></i></a>
+        <a class="tree-view" onclick="hiddenWifeOrHusband();"><i class="fa fa-tree"></i></a>
     </div>
-        <div class="tree text-center">
+        <div class="tree text-center" style="position: center !important;">
             <ul>
                 @if($userIndex)
                     <li>
-                        <a href="/home/{{$userIndex->id}}/detail">
-                            <div><img src="{{'../uploads/'.$userIndex->avatar}}" style="width: 100px; height: 125px"><br><p>{{$userIndex->name}}</p></div>
+                        <a href="/tree/{{$userIndex->id}}/view-detail">
+                            <div>
+                                <img class="img-user" src="{{'../uploads/'.$userIndex->avatar}}" style="width: 75px; height: 100px">
+                                <p>{{$userIndex->name}}</p>
+                            </div>
                             <?php
                             $home = new App\Http\Controllers\HomeController();
 
