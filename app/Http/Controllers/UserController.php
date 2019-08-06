@@ -370,7 +370,7 @@ class UserController extends Controller
             $avatar = $request->file('fileAvatar')->getClientOriginalName();
             $filename = time() . '_' . $avatar;
             $destination = base_path() . '/public/uploads';
-            dd($destination);
+            //dd($destination);
             $request->file('fileAvatar')->move($destination, $filename);
         }
 
