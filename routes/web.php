@@ -14,11 +14,16 @@
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/test-tree', 'HomeController@testTree')->name('test-tree');
+Route::get('/tree/setChi', 'UserController@setChi')->name('setChi');
+
 Route::get('/tree', 'HomeController@getTree')->name('tree');
 Route::get('/tree/{userId?}/view-detail', 'HomeController@getDetailUser')->name('view-detail-member');
+Route::post('/tree/update-sort-number', 'UserController@updateSortInFamily')->name('update-sort-in-family');
 Route::get('/event', 'EventController@index')->name('event');
 Route::get('/introduction', 'NewsController@introduction')->name('introduction');
 Route::get('/rule', 'NewsController@rule')->name('rule');
+Route::get('/news/add', 'NewsController@getAddNews')->name('get-add-news');
 Route::post('/add-child-wife-husband', 'UserController@postUserSelfAddNewMember')->name('add-child-wife-husband');
 
 

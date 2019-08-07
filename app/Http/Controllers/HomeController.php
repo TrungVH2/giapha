@@ -17,6 +17,10 @@ class HomeController extends Controller
         //$this->middleware('auth');
     }
 
+    public  function testTree(){
+        return view('tree.test-tree');
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -55,8 +59,8 @@ class HomeController extends Controller
         // show wife and husband
         if ($wife) {
             foreach ($wife as $k => $it) {
-                echo '<div>';
-                echo '<img src="../uploads/' . $it['avatar'] . '" style="width: 100px; height: 125px"><br><p>';
+                echo '<div class="show-wife-husband">';
+                echo '<img class="img-user" src="../uploads/' . $it['avatar'] . '" style="width: 75px; height: 100px"><p>-';
                 echo $it['name'];
                 echo '</p>';
                 echo '</div>';
@@ -92,7 +96,7 @@ class HomeController extends Controller
                 echo '<li>';
                 echo '<a href="/tree/' . $item['id'] . '/view-detail">';
                 echo '<div>';
-                echo '<img src="../uploads/' . $item['avatar'] . '" style="width: 100px; height: 125px"><br><p>';
+                echo '<img class="img-user" src="../uploads/' . $item['avatar'] . '" style="width: 75px; height: 100px"><p>';
                 echo $item['name'];
                 echo '</p>';
                 echo '</div>';

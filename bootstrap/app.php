@@ -11,9 +11,17 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
+/*$app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+);*/
+$app = new Illuminate\Foundation\Application(
+    realpath(__DIR__ . '/../')
 );
+
+$app->bind('path.public', function ()
+{
+    return base_path() . '/public_html';
+});
 
 /*
 |--------------------------------------------------------------------------

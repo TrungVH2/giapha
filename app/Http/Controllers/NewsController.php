@@ -30,4 +30,9 @@ class NewsController extends Controller
     {
         return view('news.rule');
     }
+
+    public function getAddNews()
+    {
+        return view('admin.news.add');
+    }
 }
